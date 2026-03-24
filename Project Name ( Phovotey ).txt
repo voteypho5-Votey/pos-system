@@ -1,0 +1,107 @@
+Project Name ( Phovotey )
+1:
+	Frontend (React)
+        ↓ API (HTTP Request)
+	Backend (Node.js + Express)
+        ↓
+	Database (MySQL)
+2
+	npm create vite@latest frontend
+	cd frontend
+	npm install
+	npm install axios react-router-dom
+	npm run dev
+3
+	frontend/
+ 	├── src/
+ 	│   ├── pages/
+ 	│   │   ├── Dashboard.jsx
+ 	│   │   ├── Products.jsx
+ 	│   │   ├── Orders.jsx
+ 	│   │   └── Login.jsx
+ 	│   ├── components/
+ 	│   │   ├── Navbar.jsx
+ 	│   │   ├── ProductCard.jsx
+ 	│   │   └── Cart.jsx
+ 	│   └── App.jsx
+
+Example: Fetch Products
+	import axios from "axios";
+	import { useEffect, useState } from "react";
+
+	function Products() {
+  	const [products, setProducts] = useState([]);
+
+ 	useEffect(() => {
+    		axios.get("http://localhost:5000/api/products")
+      		.then(res => setProducts(res.data));
+  	}, []);
+
+  	return (
+    		<div>
+      			<h2>Product List</h2>
+      			{products.map(p => (
+        		<p key={p.id}>{p.name} - ${p.price}</p>
+      			))}
+    		</div>
+  		);
+		}
+	export default Products;
+==============================================
+
+Backend (Server Side)
+	✅Technology
+
+	Node.js
+	Express.js
+	MySQL
+	JWT Authentication
+1 
+	backend/
+ 	├── routes/
+ 	│   ├── productRoutes.js
+ 	│   ├── orderRoutes.js
+ 	│   └── userRoutes.js
+ 	├── controllers/
+	├── models/
+ 	├── config/
+ 	│   └── db.js
+ 	└── server.js
+
+2	mkdir backend
+	cd backend
+	npm init -y
+	npm install express mysql2 cors dotenv jsonwebtoken bcryptjs
+	npm install nodemon --save-dev
+
+3	server.js
+
+	const express = require("express");
+	const cors = require("cors");
+	require("dotenv").config();
+
+	const app = express();
+	app.use(cors());
+	app.use(express.json());
+
+	app.use("/api/products", require("./routes/productRoutes"));
+
+	app.listen(5000, () => {
+  	console.log("Server running on port 5000");
+	});
+
+4	🔹 Example: Product Route
+
+	const express = require("express");
+	const router = express.Router();
+	const db = require("../config/db");
+	
+	router.get("/", (req, res) => {
+  	db.query("SELECT * FROM products", (err, result) => {
+    		if (err) throw err;
+    		res.json(result);
+  		});
+	});
+
+	module.exports = router;
+	

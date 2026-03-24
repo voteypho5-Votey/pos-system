@@ -1,0 +1,393 @@
+បាន។ ខាងក្រោមនេះជារចនាសម្ព័ន្ធ POS System Full Professional ដែលអ្នកគួរធ្វើ ដើម្បីឲ្យប្រើបានជាក់ស្តែងក្នុងហាង។
+
+Module សំខាន់ៗ
+
+Authentication
+
+Login Admin / Cashier
+
+Logout
+
+Protect route
+
+Role permission
+
+Dashboard
+
+ចំណូលថ្ងៃនេះ
+
+ចំណូលខែនេះ
+
+ចំនួន order
+
+ចំនួនទំនិញ
+
+Low stock alert
+
+Category
+
+Add
+
+Edit
+
+Delete
+
+Search
+
+Product
+
+Add / Edit / Delete
+
+Upload image
+
+Barcode / SKU
+
+Cost price / Sale price
+
+Stock quantity
+
+Min stock
+
+Unit
+
+Status
+
+Search / Filter / Pagination
+
+POS / Sale
+
+Product card/grid
+
+Search product
+
+Add to cart
+
+Increase / decrease qty
+
+Discount
+
+Tax
+
+Grand total
+
+Amount received
+
+Change back
+
+Checkout
+
+Save invoice
+
+Print receipt
+
+Stock
+
+Stock in
+
+Stock out
+
+Stock adjustment
+
+Stock history
+
+Low stock warning
+
+Reports
+
+Income report
+
+Sale report
+
+Stock report
+
+Daily / Monthly report
+
+Users
+
+Admin create cashier
+
+Activate / deactivate user
+
+Reset password
+
+Database Structure
+User
+{
+  name,
+  email,
+  password,
+  role // admin, user
+}
+Category
+{
+  name,
+  description,
+  status
+}
+Product
+{
+  name,
+  category,
+  code,
+  barcode,
+  unit,
+  image,
+  description,
+  costPrice,
+  salePrice,
+  stockQty,
+  minStock,
+  status
+}
+Sale
+{
+  invoiceNo,
+  items: [
+    {
+      productId,
+      name,
+      qty,
+      price,
+      total
+    }
+  ],
+  subtotal,
+  discount,
+  tax,
+  grandTotal,
+  amountReceived,
+  changeBack,
+  cashier
+}
+StockMovement
+{
+  productId,
+  type, // in, out, adjust
+  qty,
+  note,
+  userId
+}
+Frontend Structure
+frontend/src
+├── components
+│   ├── layout
+│   │   ├── Header.jsx
+│   │   └── Sidebar.jsx
+│   ├── common
+│   │   ├── Table.jsx
+│   │   ├── Modal.jsx
+│   │   └── ConfirmBox.jsx
+│   └── pos
+│       ├── ProductCard.jsx
+│       ├── CartItem.jsx
+│       └── Receipt.jsx
+├── layouts
+│   └── MainLayout.jsx
+├── pages
+│   ├── auth/Login.jsx
+│   ├── dashboard/Dashboard.jsx
+│   ├── category/Category.jsx
+│   ├── product/Product.jsx
+│   ├── pos/Pos.jsx
+│   ├── sale/Sale.jsx
+│   ├── reports/IncomeReport.jsx
+│   ├── reports/StockReport.jsx
+│   └── users/UserManagement.jsx
+├── routes
+│   ├── AppRoutes.jsx
+│   ├── ProtectedRoute.jsx
+│   └── RoleRoute.jsx
+├── services
+│   └── axiosInstance.js
+└── store
+    └── useAuthStore.jsx
+Backend Structure
+backend
+├── config
+│   └── multer.js
+├── controllers
+│   ├── auth.controller.js
+│   ├── category.controller.js
+│   ├── product.controller.js
+│   ├── sale.controller.js
+│   ├── report.controller.js
+│   └── user.controller.js
+├── middleware
+│   └── auth.middleware.js
+├── models
+│   ├── User.js
+│   ├── Category.js
+│   ├── Product.js
+│   ├── Sale.js
+│   └── StockMovement.js
+├── routes
+│   ├── auth.route.js
+│   ├── category.route.js
+│   ├── product.route.js
+│   ├── sale.route.js
+│   ├── report.route.js
+│   └── user.route.js
+├── uploads
+├── server.js
+└── seedAdmin.js
+Flow សម្រាប់ប្រើជាក់ស្តែង
+
+Admin login
+
+បង្កើត Category
+
+បង្កើត Product
+
+កំណត់ stock ដំបូង
+
+Cashier login
+
+លក់ក្នុង POS
+
+System save sale
+
+System កាត់ stock ស្វ័យប្រវត្តិ
+
+Dashboard និង report update
+
+Priority Order ត្រូវសាងសង់
+
+Phase 1
+
+Auth
+
+Category CRUD
+
+Product CRUD + image
+
+Role route
+
+Phase 2
+
+POS cart
+
+Checkout
+
+Sale save
+
+Stock auto reduce
+
+Phase 3
+
+Dashboard
+
+Income report
+
+Stock report
+
+Receipt print
+
+Phase 4
+
+User management
+
+Purchase / stock in
+
+Stock history
+
+Barcode scan
+
+អ្វីដែលអ្នកគួរធ្វើឥឡូវ
+
+ដើម្បីឲ្យមិនច្របូកច្របល់ យើងគួរធ្វើម្តងមួយ module តាមលំដាប់នេះ៖
+
+ជំហានទី 1
+
+Category Module ពេញ
+
+ជំហានទី 2
+
+Product Module ពេញ
+
+ជំហានទី 3
+
+POS + Sale + Stock Reduce
+
+ជំហានទី 4
+
+Dashboard + Reports
+
+បើយើងធ្វើម្ដងតែមួយគត់ទាំងអស់ អ្នកនឹងងាយស្រួល error និងពិបាក debug។
+
+
+
+
+
+
+8) តើទិន្នន័យមកពីណា
+IncomeReport
+
+ទាញពី Sale collection:
+
+invoiceNo
+
+cashier
+
+subtotal
+
+discount
+
+tax
+
+grandTotal
+
+amountReceived
+
+changeBack
+
+createdAt
+
+StockReport
+
+ទាញពី Product collection:
+
+image
+
+name
+
+category
+
+code
+
+costPrice
+
+salePrice
+
+stockQty
+
+status
+
+Category ភ្ជាប់ដោយរបៀបណា
+
+ព្រោះ Product.category រក្សាទុកជាឈ្មោះ category ដូចជា:
+
+ភេសជ្ជៈ
+
+អនាម័យ
+
+គ្រឿងទេស
+
+ដូច្នេះ StockReport បង្ហាញ category បានភ្លាមពី Product ។
+
+9) សរុប
+
+ដើម្បីភ្ជាប់ data ពេញ:
+
+Category បង្កើតប្រភេទ
+
+Product រក្សាទុក category
+
+POS addToCart យក _id, name, price
+
+Checkout ផ្ញើទៅ Sale
+
+Sale controller រក្សាទុក sale + កាត់ stock
+
+IncomeReport ទាញពី Sale
+
+StockReport ទាញពី Product

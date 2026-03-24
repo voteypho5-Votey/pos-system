@@ -1,0 +1,13 @@
+voteypho5_db_user
+KjFeXd7znUiCLfFm
+
+mongodb+srv://mater-pos:<db_password>@cluster0.egksiqx.mongodb.net/
+
+
+
+
+
+mongosh "mongodb+srv://cluster0.egksiqx.mongodb.net/" --apiVersion 1 --username mater-pos
+
+
+mongodb+srv://mater-pos:<db_password>@cluster0.egksiqx.mongodb.net/?appName=Cluster0
