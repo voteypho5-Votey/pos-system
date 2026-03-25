@@ -58,3 +58,169 @@
     padding: 15px;
   }
 }
+
+
+
+
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 18px;
+}
+
+.table-card,
+.info-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.section-title {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  font-family: "Battambang", sans-serif;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.invoice-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+}
+
+.invoice-table th,
+.invoice-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  font-family: "Battambang", sans-serif;
+  white-space: nowrap;
+}
+
+.invoice-table th {
+  background: #f9fafb;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.invoice-table td {
+  color: #374151;
+  font-size: 14px;
+}
+
+.invoice-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.side-info-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-family: "Battambang", sans-serif;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.list-item strong {
+  display: block;
+  color: #111827;
+  font-size: 15px;
+}
+
+.list-item p {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.danger-badge,
+.primary-badge {
+  min-width: 74px;
+  text-align: center;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: "Battambang", sans-serif;
+}
+
+.danger-badge {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.primary-badge {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.empty-text {
+  color: #6b7280;
+  font-size: 14px;
+  font-family: "Battambang", sans-serif;
+  padding: 10px 0;
+  text-align: center;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Phone */
+@media (max-width: 600px) {
+  .table-card,
+  .info-card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .invoice-table {
+    min-width: 520px;
+  }
+
+  .invoice-table th,
+  .invoice-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .list-item {
+    align-items: flex-start;
+  }
+
+  .danger-badge,
+  .primary-badge {
+    min-width: 64px;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}

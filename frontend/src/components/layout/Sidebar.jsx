@@ -15,7 +15,7 @@ import "./Sidebar.css";
 function Sidebar() {
   const [openPosMenu, setOpenPosMenu] = useState(true);
   const [openReportMenu, setOpenReportMenu] = useState(true);
-  const user = useAuthStore((state) => state.user);
+  const { user } = useAuthStore();
 
   return (
     <aside className="sidebar">

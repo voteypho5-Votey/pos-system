@@ -1,47 +1,112 @@
 .header {
-  height: 70px;
-  background: linear-gradient(90deg, #0b1530, #15284a);
-  color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  box-sizing: border-box;
+  gap: 16px;
+  min-height: 60px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
 }
 
-.header-left,
-.header-right {
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.header > div:last-child {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.header-right button {
-  border: none;
-  background: #ef4444;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 10px;
-  cursor: pointer;
+.header span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
 }
 
-.header-right span {
-  background: rgba(255, 255, 255, 0.12);
-  padding: 8px 14px;
-  border-radius: 999px;
+.header button {
+  border: none;
+  border-radius: 10px;
+  min-height: 38px;
+  padding: 0 14px;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.header > div:last-child button {
+  background: #ef4444;
+  color: #fff;
+}
+
+.header > div:last-child button:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
 }
 
 .menu-toggle-btn {
   display: none;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 18px;
+}
+
+.menu-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 @media (max-width: 768px) {
+  .header {
+    padding: 10px 14px;
+  }
+
   .menu-toggle-btn {
     display: inline-flex;
-    border: none;
-    background: transparent;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
+  }
+
+  .header h3 {
+    font-size: 18px;
+  }
+
+  .header span {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    gap: 10px;
+  }
+
+  .header h3 {
+    font-size: 16px;
+  }
+
+  .header > div:last-child button {
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 12px;
   }
 }
