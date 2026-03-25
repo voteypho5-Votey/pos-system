@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axiosInstance from "../../services/axiosInstance";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import "./incomeReport.css";
+import "./IncomeReport.css";
 
 function IncomeReport() {
   const [rows, setRows] = useState([]);
