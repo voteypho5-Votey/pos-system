@@ -338,9 +338,9 @@ function Pos() {
                   </div>
 
                   <div className="cart-price-box">
-                    <div className="cart-old-price">${itemTotal.toFixed(2)}</div>
-                    <div className="cart-discount-text">- ${itemDiscount.toFixed(2)}</div>
-                    <div className="cart-price">${finalPrice.toFixed(2)}</div>
+                    <div className="cart-old-price">សរុប = ${itemTotal.toFixed(2)}</div>
+                    <div className="cart-discount-text">បញ្ចុះតម្លៃ​ = - ${itemDiscount.toFixed(2)}</div>
+                    <div className="cart-price">តម្លៃរាយ = ${finalPrice.toFixed(2)}</div>
                   </div>
                 </div>
               );
