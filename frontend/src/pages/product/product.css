@@ -296,6 +296,7 @@
 .product-form-group label {
   font-size: 14px;
   font-weight: 600;
+  margin-bottom: 6px;
   color: #334155;
 }
 
@@ -333,7 +334,7 @@
 .product-modal-buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 10px;
   margin-top: 8px;
   padding-top: 4px;
 }
@@ -399,6 +400,11 @@
   white-space: nowrap;
 }
 
+.product-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
   .product-content {
@@ -445,12 +451,20 @@
   }
 
   .product-modal-buttons {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 
   .product-cancel-btn,
   .product-submit-btn {
     width: 100%;
+    padding: 14px;
+    font-size: 15px;
+  }
+}
+@media (max-width: 768px) {
+  .product-form-row {
+    flex-direction: column;
+    gap: 12px;
   }
 }
 
@@ -480,40 +494,3 @@
   }
 }
 
-@media (max-width: 768px) {
-  form {
-    width: 100%;
-  }
-
-  .product-form-row {
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .product-form-group input,
-  .product-form-group select {
-    font-size: 14px;
-    padding: 11px 12px;
-  }
-
-  .product-form-group label {
-    font-size: 14px;
-  }
-
-  .product-thumb {
-    width: 100px;
-    height: 100px;
-  }
-
-  .product-modal-buttons {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .product-cancel-btn,
-  .product-submit-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 14px;
-  }
-}
