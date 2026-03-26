@@ -185,7 +185,17 @@ function Pos() {
   const handlePrint = () => {
     window.print();
   };
+
+  // ក្រឡោន​ទំនិញបញ្ជាទិញ
+  const updateDiscount = (id, discount) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item._id === id ? { ...item, discount } : item
+      )
+    );
+  };
   
+
   return (
     <div className="pos-page">
       <div className="pos-left">
@@ -235,7 +245,7 @@ function Pos() {
                 <div className="product-images">
                   {item.image ? (
                     <img
-                      src={`https://pos-system-ofv8.onrender.com${item.image}`} 
+                      src={`https://pos-system-ofv8.onrender.com${item.image}`}
                       alt={item.name}
                       className="product-images"
                       onError={(e) => {
@@ -280,27 +290,59 @@ function Pos() {
             <div className="empty-cart">មិនទាន់មានទំនិញ</div>
           ) : (
             cart.map((item) => (
+              // ក្រឡោន​ទំនិញបញ្ជាទិញ
+              // <div className="cart-row" key={item._id}>
+              //   <div className="cart-name">{item.name}</div>
+
+              //   <div className="cart-qty-box">
+              //     <button
+              //       className="qty-btn"
+              //       onClick={() => decreaseQty(item._id)}
+              //     >
+              //       -
+              //     </button>
+              //     <span className="qty-number">{item.qty}</span>
+              //     <button
+              //       className="qty-btn"
+              //       onClick={() => increaseQty(item._id)}
+              //     >
+              //       +
+              //     </button>
+              //   </div>
+
+              //   <div className="cart-price">
+              //     ${(item.price * item.qty).toFixed(2)}
+              //   </div>
+              // </div>
               <div className="cart-row" key={item._id}>
                 <div className="cart-name">{item.name}</div>
 
                 <div className="cart-qty-box">
-                  <button
-                    className="qty-btn"
-                    onClick={() => decreaseQty(item._id)}
-                  >
+                  <button className="qty-btn" onClick={() => decreaseQty(item._id)}>
                     -
                   </button>
                   <span className="qty-number">{item.qty}</span>
-                  <button
-                    className="qty-btn"
-                    onClick={() => increaseQty(item._id)}
-                  >
+                  <button className="qty-btn" onClick={() => increaseQty(item._id)}>
                     +
                   </button>
                 </div>
 
+                {/* 🔥 Discount Input */}
+                <div className="cart-discount">
+                  <input
+                    type="number"
+                    value={item.discount || 0}
+                    onChange={(e) =>
+                      updateDiscount(item._id, Number(e.target.value))
+                    }
+                    placeholder="Discount"
+                    className="discount-input"
+                  />
+                </div>
+
+                {/* 🔥 Price after discount */}
                 <div className="cart-price">
-                  ${(item.price * item.qty).toFixed(2)}
+                  ${((item.price * item.qty) - (item.discount || 0)).toFixed(2)}
                 </div>
               </div>
             ))

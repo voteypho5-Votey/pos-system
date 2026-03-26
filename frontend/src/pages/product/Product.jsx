@@ -270,116 +270,118 @@ function Product() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="product-form-group">
-                <label>រូបភាព</label>
-                <input
-                  type="file"
-                  name="image"
-                  accept="image/*"
-                  onChange={handleImage}
-                />
-                {previewImage && (
-                  <img
-                    src={previewImage}
-                    alt="preview"
-                    className="product-thumb"
-                    // style={{ marginTop: "10px" }}
-                  />
-                )}
-              </div>
-
-              <div className="product-form-group">
-                <label>ឈ្មោះទំនិញ</label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="បញ្ចូលឈ្មោះទំនិញ"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="product-form-group">
-                <label>ប្រភេទទំនិញ</label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">ជ្រើសរើសប្រភេទទំនិញ</option>
-                  {categories.map((cat) => (
-                    <option key={cat._id} value={cat.name}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="product-form-group">
-                <label>កូដទំនិញ</label>
-                <input
-                  type="text"
-                  name="code"
-                  placeholder="បញ្ចូលកូដទំនិញ"
-                  value={formData.code}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="product-form-row">
+            
+            <form onSubmit={handleSubmit} className="product-form">
+              <div className="scroll">
                 <div className="product-form-group">
-                  <label>ថ្លៃដើម</label>
+                  <label>រូបភាព</label>
                   <input
-                    type="number"
-                    name="costPrice"
-                    placeholder="បញ្ចូលថ្លៃដើម"
-                    value={formData.costPrice}
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleImage}
+                  />
+                  {previewImage && (
+                    <img
+                      src={previewImage}
+                      alt="preview"
+                      className="product-thumb"
+                    />
+                  )}
+                </div>
+
+                <div className="product-form-group">
+                  <label>ឈ្មោះទំនិញ</label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="បញ្ចូលឈ្មោះទំនិញ"
+                    value={formData.name}
                     onChange={handleChange}
                     required
                   />
                 </div>
 
                 <div className="product-form-group">
-                  <label>ថ្លៃលក់</label>
-                  <input
-                    type="number"
-                    name="salePrice"
-                    placeholder="បញ្ចូលថ្លៃលក់"
-                    value={formData.salePrice}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="product-form-row">
-                <div className="product-form-group">
-                  <label>ចំនួនស្តុក</label>
-                  <input
-                    type="number"
-                    name="stockQty"
-                    placeholder="បញ្ចូលចំនួនស្តុក"
-                    value={formData.stockQty}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="product-form-group">
-                  <label>ស្ថានភាព</label>
+                  <label>ប្រភេទទំនិញ</label>
                   <select
-                    name="status"
-                    value={formData.status}
+                    name="category"
+                    value={formData.category}
                     onChange={handleChange}
+                    required
                   >
-                    <option value="មាន">មាន</option>
-                    <option value="អស់">អស់</option>
-                    <option value="អសកម្ម">អសកម្ម</option>
+                    <option value="">ជ្រើសរើសប្រភេទទំនិញ</option>
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat.name}>
+                        {cat.name}
+                      </option>
+                    ))}
                   </select>
+                </div>
+
+                <div className="product-form-group">
+                  <label>កូដទំនិញ</label>
+                  <input
+                    type="text"
+                    name="code"
+                    placeholder="បញ្ចូលកូដទំនិញ"
+                    value={formData.code}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="product-form-row">
+                  <div className="product-form-group">
+                    <label>ថ្លៃដើម</label>
+                    <input
+                      type="number"
+                      name="costPrice"
+                      placeholder="បញ្ចូលថ្លៃដើម"
+                      value={formData.costPrice}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="product-form-group">
+                    <label>ថ្លៃលក់</label>
+                    <input
+                      type="number"
+                      name="salePrice"
+                      placeholder="បញ្ចូលថ្លៃលក់"
+                      value={formData.salePrice}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="product-form-row">
+                  <div className="product-form-group">
+                    <label>ចំនួនស្តុក</label>
+                    <input
+                      type="number"
+                      name="stockQty"
+                      placeholder="បញ្ចូលចំនួនស្តុក"
+                      value={formData.stockQty}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="product-form-group">
+                    <label>ស្ថានភាព</label>
+                    <select
+                      name="status"
+                      value={formData.status}
+                      onChange={handleChange}
+                    >
+                      <option value="មាន">មាន</option>
+                      <option value="អស់">អស់</option>
+                      <option value="អសកម្ម">អសកម្ម</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
