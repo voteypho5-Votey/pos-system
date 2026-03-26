@@ -21,6 +21,10 @@ const saleItemSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
+    discount: {
+      type: Number,
+      default: 0
+    },
     total: {
       type: Number,
       required: true,

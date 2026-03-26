@@ -79,6 +79,7 @@ function Pos() {
           stock: Number(product.stockQty) || 0,
           image: product.image || "",
           qty: 1,
+          discount: 0,
         },
       ];
     });
@@ -110,7 +111,11 @@ function Pos() {
   };
 
   const subtotal = useMemo(() => {
-    return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    return cart.reduce((sum, item) => {
+      const itemTotal = item.price * item.qty;
+      const itemDiscount = Number(item.discount) || 0;
+      return sum + (itemTotal - itemDiscount);
+    }, 0);
   }, [cart]);
 
   const safeDiscount = Math.min(Math.max(Number(discount) || 0, 0), 100);
@@ -139,6 +144,8 @@ function Pos() {
           name: item.name,
           qty: item.qty,
           price: item.price,
+          discount: Number(item.discount) || 0,
+          total: item.price * item.qty - (Number(item.discount) || 0),
         })),
         discount: safeDiscount,
         tax: safeTax,
@@ -189,12 +196,16 @@ function Pos() {
   // ក្រឡោន​ទំនិញបញ្ជាទិញ
   const updateDiscount = (id, discount) => {
     setCart((prev) =>
-      prev.map((item) =>
-        item._id === id ? { ...item, discount } : item
-      )
+      prev.map((item) => {
+        if (item._id === id) {
+          const itemTotal = item.price * item.qty;
+          const safeDiscount = Math.max(0, Math.min(Number(discount) || 0, itemTotal));
+          return { ...item, discount: safeDiscount };
+        }
+        return item;
+      })
     );
   };
-  
 
   return (
     <div className="pos-page">
@@ -289,63 +300,51 @@ function Pos() {
           {cart.length === 0 ? (
             <div className="empty-cart">មិនទាន់មានទំនិញ</div>
           ) : (
-            cart.map((item) => (
-              // ក្រឡោន​ទំនិញបញ្ជាទិញ
-              // <div className="cart-row" key={item._id}>
-              //   <div className="cart-name">{item.name}</div>
+            cart.map((item) => {
+              const itemTotal = item.price * item.qty;
+              const itemDiscount = Number(item.discount) || 0;
+              const finalPrice = itemTotal - itemDiscount;
 
-              //   <div className="cart-qty-box">
-              //     <button
-              //       className="qty-btn"
-              //       onClick={() => decreaseQty(item._id)}
-              //     >
-              //       -
-              //     </button>
-              //     <span className="qty-number">{item.qty}</span>
-              //     <button
-              //       className="qty-btn"
-              //       onClick={() => increaseQty(item._id)}
-              //     >
-              //       +
-              //     </button>
-              //   </div>
+              return (
+                <div className="cart-row" key={item._id}>
+                  <div className="cart-name">{item.name}</div>
 
-              //   <div className="cart-price">
-              //     ${(item.price * item.qty).toFixed(2)}
-              //   </div>
-              // </div>
-              <div className="cart-row" key={item._id}>
-                <div className="cart-name">{item.name}</div>
+                  <div className="cart-qty-box">
+                    <button
+                      className="qty-btn"
+                      onClick={() => decreaseQty(item._id)}
+                    >
+                      -
+                    </button>
+                    <span className="qty-number">{item.qty}</span>
+                    <button
+                      className="qty-btn"
+                      onClick={() => increaseQty(item._id)}
+                    >
+                      +
+                    </button>
+                  </div>
 
-                <div className="cart-qty-box">
-                  <button className="qty-btn" onClick={() => decreaseQty(item._id)}>
-                    -
-                  </button>
-                  <span className="qty-number">{item.qty}</span>
-                  <button className="qty-btn" onClick={() => increaseQty(item._id)}>
-                    +
-                  </button>
+                  <div className="cart-discount">
+                    <input
+                      type="number"
+                      min="0"
+                      max={itemTotal}
+                      value={item.discount || 0}
+                      onChange={(e) => updateDiscount(item._id, e.target.value)}
+                      placeholder="បញ្ចុះ"
+                      className="discount-input"
+                    />
+                  </div>
+
+                  <div className="cart-price-box">
+                    <div className="cart-old-price">${itemTotal.toFixed(2)}</div>
+                    <div className="cart-discount-text">- ${itemDiscount.toFixed(2)}</div>
+                    <div className="cart-price">${finalPrice.toFixed(2)}</div>
+                  </div>
                 </div>
-
-                {/* 🔥 Discount Input */}
-                <div className="cart-discount">
-                  <input
-                    type="number"
-                    value={item.discount || 0}
-                    onChange={(e) =>
-                      updateDiscount(item._id, Number(e.target.value))
-                    }
-                    placeholder="Discount"
-                    className="discount-input"
-                  />
-                </div>
-
-                {/* 🔥 Price after discount */}
-                <div className="cart-price">
-                  ${((item.price * item.qty) - (item.discount || 0)).toFixed(2)}
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
@@ -426,18 +425,30 @@ function Pos() {
               </div>
               <div className="receipt-rowLigh">
                 {receiptData.items && receiptData.items.length > 0 ? (
-                  receiptData.items.map((item, index) => (
-                    <div
-                      className="receipt-row"
-                      key={item.productId || item._id || index}
-                    >
-                      <span>{item.name}</span>
-                      <span>{item.qty}</span>
-                      <span>
-                        ${Number(item.total || item.price * item.qty).toFixed(2)}
-                      </span>
-                    </div>
-                  ))
+                  receiptData.items.map((item, index) => {
+                    const rowTotal = Number(item.price || 0) * Number(item.qty || 0);
+                    const rowDiscount = Number(item.discount || 0);
+                    const rowFinal = Number(item.total || rowTotal - rowDiscount);
+
+                    return (
+                      <div
+                        className="receipt-row"
+                        key={item.productId || item._id || index}
+                      >
+                        <span>
+                          {item.name}
+                          {rowDiscount > 0 && (
+                            <small className="receipt-item-discount">
+                              {" "}
+                              (-${rowDiscount.toFixed(2)})
+                            </small>
+                          )}
+                        </span>
+                        <span>{item.qty}</span>
+                        <span>${rowFinal.toFixed(2)}</span>
+                      </div>
+                    );
+                  })
                 ) : (
                   <div className="receipt-row">
                     <span>មិនមានទំនិញ</span>
