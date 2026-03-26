@@ -494,3 +494,135 @@
   }
 }
 
+/* =========== */
+.product-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.scroll {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.product-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.product-form-group label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.product-form-group input,
+.product-form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  outline: none;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.product-form-group input:focus,
+.product-form-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.product-form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.product-form-row .product-form-group {
+  flex: 1;
+}
+
+.product-thumb {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  margin-top: 10px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.product-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 14px;
+  margin-top: 10px;
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.product-cancel-btn,
+.product-submit-btn {
+  border: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.product-cancel-btn {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.product-submit-btn {
+  background: #2563eb;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .scroll {
+    max-height: 65vh;
+    padding-right: 2px;
+  }
+
+  .product-form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .product-form-group {
+    margin-bottom: 14px;
+  }
+
+  .product-form-group label {
+    font-size: 14px;
+  }
+
+  .product-form-group input,
+  .product-form-group select {
+    font-size: 14px;
+    padding: 11px 12px;
+  }
+
+  .product-thumb {
+    width: 90px;
+    height: 90px;
+  }
+
+  .product-modal-buttons {
+    flex-direction: column;
+  }
+
+  .product-cancel-btn,
+  .product-submit-btn {
+    width: 100%;
+  }
+}
