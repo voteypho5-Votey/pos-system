@@ -235,7 +235,7 @@ function Pos() {
                 <div className="product-images">
                   {item.image ? (
                     <img
-                      src={`http://localhost:8000${item.image}`}
+                      src={`https://pos-system-ofv8.onrender.com${item.image}`} 
                       alt={item.name}
                       className="product-images"
                       onError={(e) => {
