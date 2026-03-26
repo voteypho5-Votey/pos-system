@@ -124,14 +124,18 @@ function Pos() {
 
   const discountAmount = (subtotal * safeDiscount) / 100;
   const grandTotal = subtotal - discountAmount + safeTax;
-  const changeBack = Math.max(safeAmountReceived - grandTotal, 0);
+ const changeBack = Math.max(
+  Number(safeAmountReceived.toFixed(2)) - Number(grandTotal.toFixed(2)),
+  0
+);
 
   const handleCheckout = async () => {
     if (cart.length === 0) {
       alert("សូមជ្រើសទំនិញជាមុន");
       return;
     }
-
+    const finalGrandTotal = Number(grandTotal.toFixed(2));
+    const finalAmountReceived = Number(safeAmountReceived.toFixed(2));
     if (safeAmountReceived < grandTotal) {
       alert("ប្រាក់ទទួលមិនគ្រប់");
       return;
@@ -398,6 +402,7 @@ function Pos() {
               min="0"
             />
           </div>
+
 
           <div className="cart-total-row">
             <span>ចំនួនទឹកប្រាក់ត្រលប់</span>
