@@ -119,32 +119,24 @@ function Pos() {
   }, [cart]);
 
   const safeDiscount = Math.min(Math.max(Number(discount) || 0, 0), 100);
-  const safeTax = Number(tax) || 0;
-  const safeAmountReceived = Number(amountReceived) || 0;
+  const finalSubtotal = Number(subtotal.toFixed(2));
+  const safeTax = Number((Number(tax) || 0).toFixed(2));
+  const finalAmountReceived = Number((Number(amountReceived) || 0).toFixed(2));
 
-  const discountAmount = (subtotal * safeDiscount) / 100;
-  const grandTotal = subtotal - discountAmount + safeTax;
-  const changeBack = Math.max(
-    Number(safeAmountReceived.toFixed(2)) - Number(grandTotal.toFixed(2)),
-    0
-  );
+  const discountAmount = Number(((finalSubtotal * safeDiscount) / 100).toFixed(2));
+  const finalGrandTotal = Number((finalSubtotal - discountAmount + safeTax).toFixed(2));
+  const changeBack = Number(Math.max(finalAmountReceived - finalGrandTotal, 0).toFixed(2));
 
   console.log({
-    subtotal,
+    subtotal: finalSubtotal,
     discountAmount,
-    safeTax,
-    grandTotal,
-    amountReceived: safeAmountReceived
+    tax: safeTax,
+    grandTotal: finalGrandTotal,
+    amountReceived: finalAmountReceived,
+    changeBack,
   });
 
-const handleCheckout = async () => {
-  const finalGrandTotal = Number(grandTotal.toFixed(2));
-  const finalAmountReceived = Number(safeAmountReceived.toFixed(2));
-  const finalChangeBack = Math.max(
-    Number((finalAmountReceived - finalGrandTotal).toFixed(2)),
-    0
-  );
-
+  const handleCheckout = async () => {
   if (cart.length === 0) {
     alert("សូមជ្រើសទំនិញជាមុន");
     return;
@@ -167,13 +159,14 @@ const handleCheckout = async () => {
           (item.price * item.qty - (Number(item.discount) || 0)).toFixed(2)
         ),
       })),
-      subtotal: Number(subtotal.toFixed(2)),
-      discount: Number(safeDiscount),
-      discountAmount: Number(discountAmount.toFixed(2)),
-      tax: Number(safeTax.toFixed(2)),
+
+      subtotal: finalSubtotal,
+      discount: safeDiscount,
+      discountAmount,
+      tax: safeTax,
       grandTotal: finalGrandTotal,
       amountReceived: finalAmountReceived,
-      changeBack: finalChangeBack,
+      changeBack,
       cashier: "Cashier",
     };
 
@@ -197,6 +190,7 @@ const handleCheckout = async () => {
 
     setShowReceipt(true);
     await getProducts();
+
   } catch (error) {
     console.log("SALE ERROR:", error.response?.data || error.message);
     alert(error?.response?.data?.message || "បង់ប្រាក់មិនបាន");
