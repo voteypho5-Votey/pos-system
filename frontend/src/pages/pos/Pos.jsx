@@ -336,11 +336,20 @@ function Pos() {
                       className="discount-input"
                     />
                   </div>
-
                   <div className="cart-price-box">
-                    <div className="cart-old-price">សរុប = ${itemTotal.toFixed(2)}</div>
-                    <div className="cart-discount-text">បញ្ចុះតម្លៃ​ = - ${itemDiscount.toFixed(2)}</div>
-                    <div className="cart-price">តម្លៃរាយ = ${finalPrice.toFixed(2)}</div>
+                    <div className="cart-old-price">
+                      សរុប: <span>${itemTotal.toFixed(2)}</span>
+                    </div>
+
+                    {itemDiscount > 0 && (
+                      <div className="cart-discount-text">
+                        បញ្ចុះតម្លៃ: <span>- ${itemDiscount.toFixed(2)}</span>
+                      </div>
+                    )}
+
+                    <div className="cart-price">
+                      តម្លៃចុងក្រោយ: <span>${finalPrice.toFixed(2)}</span>
+                    </div>
                   </div>
                 </div>
               );
