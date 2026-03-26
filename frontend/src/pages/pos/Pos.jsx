@@ -124,63 +124,84 @@ function Pos() {
 
   const discountAmount = (subtotal * safeDiscount) / 100;
   const grandTotal = subtotal - discountAmount + safeTax;
- const changeBack = Math.max(
-  Number(safeAmountReceived.toFixed(2)) - Number(grandTotal.toFixed(2)),
-  0
-);
+  const changeBack = Math.max(
+    Number(safeAmountReceived.toFixed(2)) - Number(grandTotal.toFixed(2)),
+    0
+  );
 
-  const handleCheckout = async () => {
-    if (cart.length === 0) {
-      alert("សូមជ្រើសទំនិញជាមុន");
-      return;
-    }
-    const finalGrandTotal = Number(grandTotal.toFixed(2));
-    const finalAmountReceived = Number(safeAmountReceived.toFixed(2));
-    if (safeAmountReceived < grandTotal) {
-      alert("ប្រាក់ទទួលមិនគ្រប់");
-      return;
-    }
+  console.log({
+    subtotal,
+    discountAmount,
+    safeTax,
+    grandTotal,
+    amountReceived: safeAmountReceived
+  });
 
-    try {
-      const payload = {
-        items: cart.map((item) => ({
-          productId: item._id,
-          name: item.name,
-          qty: item.qty,
-          price: item.price,
-          discount: Number(item.discount) || 0,
-          total: item.price * item.qty - (Number(item.discount) || 0),
-        })),
-        discount: safeDiscount,
-        tax: safeTax,
-        amountReceived: safeAmountReceived,
-        cashier: "Cashier",
-      };
+const handleCheckout = async () => {
+  const finalGrandTotal = Number(grandTotal.toFixed(2));
+  const finalAmountReceived = Number(safeAmountReceived.toFixed(2));
+  const finalChangeBack = Math.max(
+    Number((finalAmountReceived - finalGrandTotal).toFixed(2)),
+    0
+  );
 
-      const res = await axiosInstance.post("/sale", payload);
-      const sale = res.data.data;
+  if (cart.length === 0) {
+    alert("សូមជ្រើសទំនិញជាមុន");
+    return;
+  }
 
-      setReceiptData({
-        invoice: sale.invoiceNo,
-        date: new Date(sale.createdAt).toLocaleString(),
-        items: sale.items || [],
-        subtotal: sale.subtotal || 0,
-        discount: sale.discount || 0,
-        discountAmount: sale.discountAmount || 0,
-        tax: sale.tax || 0,
-        total: sale.grandTotal || 0,
-        amountReceived: sale.amountReceived || 0,
-        changeBack: sale.changeBack || 0,
-      });
+  if (finalAmountReceived < finalGrandTotal) {
+    alert("ប្រាក់ទទួលមិនគ្រប់");
+    return;
+  }
 
-      setShowReceipt(true);
-      await getProducts();
-    } catch (error) {
-      console.log(error);
-      alert(error?.response?.data?.message || "បង់ប្រាក់មិនបាន");
-    }
-  };
+  try {
+    const payload = {
+      items: cart.map((item) => ({
+        productId: item._id,
+        name: item.name,
+        qty: item.qty,
+        price: Number(item.price),
+        discount: Number(item.discount) || 0,
+        total: Number(
+          (item.price * item.qty - (Number(item.discount) || 0)).toFixed(2)
+        ),
+      })),
+      subtotal: Number(subtotal.toFixed(2)),
+      discount: Number(safeDiscount),
+      discountAmount: Number(discountAmount.toFixed(2)),
+      tax: Number(safeTax.toFixed(2)),
+      grandTotal: finalGrandTotal,
+      amountReceived: finalAmountReceived,
+      changeBack: finalChangeBack,
+      cashier: "Cashier",
+    };
 
+    console.log("PAYLOAD:", payload);
+
+    const res = await axiosInstance.post("/sale", payload);
+    const sale = res.data.data;
+
+    setReceiptData({
+      invoice: sale.invoiceNo,
+      date: new Date(sale.createdAt).toLocaleString(),
+      items: sale.items || [],
+      subtotal: sale.subtotal || 0,
+      discount: sale.discount || 0,
+      discountAmount: sale.discountAmount || 0,
+      tax: sale.tax || 0,
+      total: sale.grandTotal || 0,
+      amountReceived: sale.amountReceived || 0,
+      changeBack: sale.changeBack || 0,
+    });
+
+    setShowReceipt(true);
+    await getProducts();
+  } catch (error) {
+    console.log("SALE ERROR:", error.response?.data || error.message);
+    alert(error?.response?.data?.message || "បង់ប្រាក់មិនបាន");
+  }
+};
   const closeReceipt = () => {
     setShowReceipt(false);
   };

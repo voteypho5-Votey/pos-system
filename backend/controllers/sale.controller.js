@@ -25,7 +25,7 @@ exports.createSale = async (req, res) => {
   try {
     const {
       items = [],
-      discount = 0,
+      discount = 0, // invoice discount (%)
       tax = 0,
       amountReceived = 0,
       cashier = "",
@@ -51,16 +51,27 @@ exports.createSale = async (req, res) => {
         });
       }
 
-      if (product.stockQty < item.qty) {
+      const qty = Number(item.qty) || 0;
+      const price = Number(item.price) || 0;
+      const itemDiscount = Number(item.discount) || 0;
+
+      if (qty <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: `ចំនួនទំនិញមិនត្រឹមត្រូវសម្រាប់ ${product.name}`,
+        });
+      }
+
+      if (product.stockQty < qty) {
         return res.status(400).json({
           success: false,
           message: `ស្តុកមិនគ្រប់សម្រាប់ ${product.name}`,
         });
       }
 
-      const qty = Number(item.qty);
-      const price = Number(item.price);
-      const total = qty * price;
+      const rawTotal = qty * price;
+      const safeItemDiscount = Math.max(0, Math.min(itemDiscount, rawTotal));
+      const total = rawTotal - safeItemDiscount;
 
       subtotal += total;
 
@@ -69,6 +80,7 @@ exports.createSale = async (req, res) => {
         name: product.name,
         qty,
         price,
+        discount: safeItemDiscount,
         total,
       });
     }
@@ -79,9 +91,13 @@ exports.createSale = async (req, res) => {
 
     const discountAmount = (subtotal * safeDiscount) / 100;
     const grandTotal = subtotal - discountAmount + safeTax;
-    const changeBack = safeAmountReceived - grandTotal;
+    const finalGrandTotal = Number(grandTotal.toFixed(2));
+    const finalAmountReceived = Number(safeAmountReceived.toFixed(2));
+    const changeBack = Number(
+      Math.max(finalAmountReceived - finalGrandTotal, 0).toFixed(2)
+    );
 
-    if (safeAmountReceived < grandTotal) {
+    if (finalAmountReceived < finalGrandTotal) {
       return res.status(400).json({
         success: false,
         message: "ប្រាក់ដែលទទួលមិនគ្រប់",
@@ -91,12 +107,12 @@ exports.createSale = async (req, res) => {
     const sale = await Sale.create({
       invoiceNo: makeInvoiceNo(),
       items: normalizedItems,
-      subtotal,
+      subtotal: Number(subtotal.toFixed(2)),
       discount: safeDiscount,
-      discountAmount,
-      tax: safeTax,
-      grandTotal,
-      amountReceived: safeAmountReceived,
+      discountAmount: Number(discountAmount.toFixed(2)),
+      tax: Number(safeTax.toFixed(2)),
+      grandTotal: finalGrandTotal,
+      amountReceived: finalAmountReceived,
       changeBack,
       cashier,
     });
@@ -130,7 +146,6 @@ exports.deleteSale = async (req, res) => {
       });
     }
 
-    // restore stock
     for (const item of sale.items) {
       await Product.findByIdAndUpdate(item.productId, {
         $inc: { stockQty: item.qty },
