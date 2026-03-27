@@ -726,3 +726,25 @@
 .receipt-item-name {
   word-break: break-word;
 }
+.due-row {
+  color: #d32f2f;
+  font-weight: 700;
+}
+
+.due-amount {
+  color: #d32f2f;
+}
+
+.change-row {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.change-amount {
+  color: #2e7d32;
+}
+
+.receipt-total-row.due-row span:last-child {
+  color: #d32f2f;
+  font-weight: 700;
+}

@@ -4,17 +4,6 @@ const Product = require("../models/Product");
 const makeInvoiceNo = () => {
   return "INV-" + Date.now();
 };
-const dueAmount = Number(
-  Math.max(finalGrandTotal - finalAmountReceived, 0).toFixed(2)
-);
-
-let paymentStatus = "paid";
-if (finalAmountReceived <= 0) {
-  paymentStatus = "unpaid";
-} else if (dueAmount > 0) {
-  paymentStatus = "partial";
-}
-
 
 exports.getSales = async (req, res) => {
   try {
@@ -36,7 +25,7 @@ exports.createSale = async (req, res) => {
   try {
     const {
       items = [],
-      discount = 0, // invoice discount (%)
+      discount = 0,
       tax = 0,
       amountReceived = 0,
       cashier = "",
@@ -97,20 +86,25 @@ exports.createSale = async (req, res) => {
     }
 
     const safeDiscount = Math.min(Math.max(Number(discount) || 0, 0), 100);
-    const safeTax = Number(tax) || 0;
-    const safeAmountReceived = Number(amountReceived) || 0;
+    const safeTax = Number((Number(tax) || 0).toFixed(2));
+    const finalSubtotal = Number(subtotal.toFixed(2));
+    const finalAmountReceived = Number((Number(amountReceived) || 0).toFixed(2));
 
-    const discountAmount = (subtotal * safeDiscount) / 100;
-    const grandTotal = subtotal - discountAmount + safeTax;
-    const finalGrandTotal = Number(grandTotal.toFixed(2));
-    const finalAmountReceived = Number(safeAmountReceived.toFixed(2));
+    const discountAmount = Number(
+      ((finalSubtotal * safeDiscount) / 100).toFixed(2)
+    );
+
+    const finalGrandTotal = Number(
+      (finalSubtotal - discountAmount + safeTax).toFixed(2)
+    );
+
     const changeBack = Number(
       Math.max(finalAmountReceived - finalGrandTotal, 0).toFixed(2)
     );
+
     const dueAmount = Number(
       Math.max(finalGrandTotal - finalAmountReceived, 0).toFixed(2)
     );
-
 
     let paymentStatus = "paid";
     if (finalAmountReceived <= 0) {
@@ -119,17 +113,18 @@ exports.createSale = async (req, res) => {
       paymentStatus = "partial";
     }
 
-
     const sale = await Sale.create({
       invoiceNo: makeInvoiceNo(),
       items: normalizedItems,
-      subtotal: Number(subtotal.toFixed(2)),
+      subtotal: finalSubtotal,
       discount: safeDiscount,
-      discountAmount: Number(discountAmount.toFixed(2)),
-      tax: Number(safeTax.toFixed(2)),
+      discountAmount,
+      tax: safeTax,
       grandTotal: finalGrandTotal,
       amountReceived: finalAmountReceived,
       changeBack,
+      dueAmount,
+      paymentStatus,
       cashier,
     });
 

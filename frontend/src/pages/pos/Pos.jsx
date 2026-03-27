@@ -11,11 +11,11 @@ function Pos() {
   const [showReceipt, setShowReceipt] = useState(false);
   const [receiptData, setReceiptData] = useState(null);
 
-  const [discount, setDiscount] = useState(0);
+  const [discount, setDiscount] = useState(0); // invoice discount %
   const [tax, setTax] = useState(0);
-  const [amountReceived, setAmountReceived] = useState(0);
+  const [amountReceived, setAmountReceived] = useState("");
 
-
+  const exchangeRate = 4001;
 
   const getCategories = async () => {
     try {
@@ -112,6 +112,22 @@ function Pos() {
     );
   };
 
+  const updateDiscount = (id, discountValue) => {
+    setCart((prev) =>
+      prev.map((item) => {
+        if (item._id === id) {
+          const itemTotal = item.price * item.qty;
+          const safeItemDiscount = Math.max(
+            0,
+            Math.min(Number(discountValue) || 0, itemTotal)
+          );
+          return { ...item, discount: safeItemDiscount };
+        }
+        return item;
+      })
+    );
+  };
+
   const subtotal = useMemo(() => {
     return cart.reduce((sum, item) => {
       const itemTotal = item.price * item.qty;
@@ -123,29 +139,29 @@ function Pos() {
   const safeDiscount = Math.min(Math.max(Number(discount) || 0, 0), 100);
   const finalSubtotal = Number(subtotal.toFixed(2));
   const safeTax = Number((Number(tax) || 0).toFixed(2));
-  const finalAmountReceived = Number((Number(amountReceived) || 0).toFixed(2));
+  const finalAmountReceived = Number(
+    (Number(amountReceived) || 0).toFixed(2)
+  );
 
-  const discountAmount = Number(((finalSubtotal * safeDiscount) / 100).toFixed(2));
-  const finalGrandTotal = Number((finalSubtotal - discountAmount + safeTax).toFixed(2));
-  const changeBack = Number(Math.max(finalAmountReceived - finalGrandTotal, 0).toFixed(2));
+  const discountAmount = Number(
+    ((finalSubtotal * safeDiscount) / 100).toFixed(2)
+  );
 
-  console.log({
-    subtotal: finalSubtotal,
-    discountAmount,
-    tax: safeTax,
-    grandTotal: finalGrandTotal,
-    amountReceived: finalAmountReceived,
-    changeBack,
-  });
+  const finalGrandTotal = Number(
+    (finalSubtotal - discountAmount + safeTax).toFixed(2)
+  );
+
+  const changeBack = Number(
+    Math.max(finalAmountReceived - finalGrandTotal, 0).toFixed(2)
+  );
+
+  const dueAmount = Number(
+    Math.max(finalGrandTotal - finalAmountReceived, 0).toFixed(2)
+  );
 
   const handleCheckout = async () => {
     if (cart.length === 0) {
       alert("សូមជ្រើសទំនិញជាមុន");
-      return;
-    }
-
-    if (finalAmountReceived < finalGrandTotal) {
-      alert("ប្រាក់ទទួលមិនគ្រប់");
       return;
     }
 
@@ -171,8 +187,6 @@ function Pos() {
         cashier: "Cashier",
       };
 
-      console.log("PAYLOAD:", payload);
-
       const res = await axiosInstance.post("/sale", payload);
       const sale = res.data.data;
 
@@ -193,12 +207,12 @@ function Pos() {
 
       setShowReceipt(true);
       await getProducts();
-
     } catch (error) {
       console.log("SALE ERROR:", error.response?.data || error.message);
       alert(error?.response?.data?.message || "បង់ប្រាក់មិនបាន");
     }
   };
+
   const closeReceipt = () => {
     setShowReceipt(false);
   };
@@ -207,29 +221,14 @@ function Pos() {
     setCart([]);
     setDiscount(0);
     setTax(0);
-    setAmountReceived(0);
+    setAmountReceived("");
     setReceiptData(null);
     setShowReceipt(false);
   };
+
   const handlePrint = () => {
     window.print();
   };
-
-  // ក្រឡោន​ទំនិញបញ្ជាទិញ
-  const updateDiscount = (id, discount) => {
-    setCart((prev) =>
-      prev.map((item) => {
-        if (item._id === id) {
-          const itemTotal = item.price * item.qty;
-          const safeDiscount = Math.max(0, Math.min(Number(discount) || 0, itemTotal));
-          return { ...item, discount: safeDiscount };
-        }
-        return item;
-      })
-    );
-  };
-  // exchangeRate
-  const exchangeRate = 4001;
 
   return (
     <div className="pos-page">
@@ -249,8 +248,9 @@ function Pos() {
 
           <div className="category-tabs">
             <button
-              className={`category-btn ${activeCategory === "ទាំងអស់" ? "active-category" : ""
-                }`}
+              className={`category-btn ${
+                activeCategory === "ទាំងអស់" ? "active-category" : ""
+              }`}
               onClick={() => setActiveCategory("ទាំងអស់")}
             >
               ទាំងអស់
@@ -259,8 +259,9 @@ function Pos() {
             {categories.map((cat) => (
               <button
                 key={cat._id}
-                className={`category-btn ${activeCategory === cat.name ? "active-category" : ""
-                  }`}
+                className={`category-btn ${
+                  activeCategory === cat.name ? "active-category" : ""
+                }`}
                 onClick={() => setActiveCategory(cat.name)}
               >
                 {cat.name}
@@ -355,11 +356,14 @@ function Pos() {
                       min="0"
                       max={itemTotal}
                       value={item.discount || 0}
-                      onChange={(e) => updateDiscount(item._id, e.target.value)}
+                      onChange={(e) =>
+                        updateDiscount(item._id, e.target.value)
+                      }
                       placeholder="បញ្ចុះ"
                       className="discount-input"
                     />
                   </div>
+
                   <div className="cart-price-box">
                     <div className="cart-old-price">
                       សរុប: <span>${itemTotal.toFixed(2)}</span>
@@ -384,7 +388,7 @@ function Pos() {
         <div className="cart-footer">
           <div className="cart-total-row">
             <span>ចំនួនសរុប</span>
-            <span className="total-price">${subtotal.toFixed(2)}</span>
+            <span className="total-price">${finalSubtotal.toFixed(2)}</span>
           </div>
 
           <div className="cart-total-row">
@@ -399,7 +403,7 @@ function Pos() {
           </div>
 
           <div className="cart-total-row">
-            <span>ចំនួនTax</span>
+            <span>ចំនួន Tax</span>
             <input
               type="number"
               value={tax}
@@ -417,17 +421,29 @@ function Pos() {
             <span>ចំនួនទឹកប្រាក់ទទួល</span>
             <input
               type="number"
-              value={amountReceived}
-              onChange={(e) => setAmountReceived(Number(e.target.value))}
+              value={amountReceived ?? ""}
+              onChange={(e) => {
+                const value = e.target.value;
+                setAmountReceived(value === "" ? "" : Number(value));
+              }}
               min="0"
+              placeholder="បញ្ចូលប្រាក់"
             />
           </div>
 
+          {dueAmount > 0 && (
+            <div className="cart-total-row due-row">
+              <span>ទឹកប្រាក់ជំពាក់</span>
+              <span className="due-amount">${dueAmount.toFixed(2)}</span>
+            </div>
+          )}
 
-          <div className="cart-total-row">
-            <span>ចំនួនទឹកប្រាក់ត្រលប់</span>
-            <span className="total-price">${changeBack.toFixed(2)}</span>
-          </div>
+          {changeBack > 0 && (
+            <div className="cart-total-row change-row">
+              <span>ចំនួនទឹកប្រាក់ត្រលប់</span>
+              <span className="change-amount">${changeBack.toFixed(2)}</span>
+            </div>
+          )}
 
           <button className="checkout-btn" onClick={handleCheckout}>
             បង់ប្រាក់
@@ -477,7 +493,9 @@ function Pos() {
                         <span className="receipt-item-name">{item.name}</span>
                         <span>{qty}</span>
                         <span>${price.toFixed(2)}</span>
-                        <span>{rowDiscount > 0 ? `$${rowDiscount.toFixed(2)}` : "-"}</span>
+                        <span>
+                          {rowDiscount > 0 ? `$${rowDiscount.toFixed(2)}` : "-"}
+                        </span>
                         <span>${rowFinal.toFixed(2)}</span>
                       </div>
                     );
@@ -503,7 +521,9 @@ function Pos() {
             <div className="receipt-row receipt-total-row">
               <span></span>
               <span>បញ្ចុះតម្លៃ ({receiptData.discount || 0}%)</span>
-              <span>-${Number(receiptData.discountAmount || 0).toFixed(2)}</span>
+              <span>
+                -${Number(receiptData.discountAmount || 0).toFixed(2)}
+              </span>
             </div>
 
             <div className="receipt-row receipt-total-row">
@@ -522,7 +542,8 @@ function Pos() {
               <span></span>
               <span>តម្លៃសរុបគិតជារៀល</span>
               <span>
-                {(Number(receiptData.total || 0) * exchangeRate).toLocaleString()} រៀល
+                {(Number(receiptData.total || 0) * exchangeRate).toLocaleString()}{" "}
+                រៀល
               </span>
             </div>
 
@@ -533,7 +554,7 @@ function Pos() {
             </div>
 
             {Number(receiptData.dueAmount || 0) > 0 && (
-              <div className="receipt-row receipt-total-row">
+              <div className="receipt-row receipt-total-row due-row">
                 <span></span>
                 <span>ទឹកប្រាក់ជំពាក់</span>
                 <span>${Number(receiptData.dueAmount || 0).toFixed(2)}</span>
@@ -544,6 +565,18 @@ function Pos() {
               <span></span>
               <span>ប្រាក់អាប់</span>
               <span>${Number(receiptData.changeBack || 0).toFixed(2)}</span>
+            </div>
+
+            <div className="receipt-row receipt-total-row">
+              <span></span>
+              <span>ស្ថានភាព</span>
+              <span>
+                {receiptData.paymentStatus === "paid"
+                  ? "បានបង់រួច"
+                  : receiptData.paymentStatus === "partial"
+                  ? "បង់បានខ្លះ"
+                  : "មិនទាន់បង់"}
+              </span>
             </div>
 
             <p className="receipt-thank">សូមអរគុណ!</p>
