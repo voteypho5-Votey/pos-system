@@ -15,7 +15,7 @@ function Pos() {
   const [tax, setTax] = useState(0);
   const [amountReceived, setAmountReceived] = useState(0);
 
- 
+
 
   const getCategories = async () => {
     try {
@@ -161,7 +161,6 @@ function Pos() {
             (item.price * item.qty - (Number(item.discount) || 0)).toFixed(2)
           ),
         })),
-
         subtotal: finalSubtotal,
         discount: safeDiscount,
         discountAmount,
@@ -188,6 +187,8 @@ function Pos() {
         total: sale.grandTotal || 0,
         amountReceived: sale.amountReceived || 0,
         changeBack: sale.changeBack || 0,
+        dueAmount: sale.dueAmount || 0,
+        paymentStatus: sale.paymentStatus || "paid",
       });
 
       setShowReceipt(true);
@@ -227,8 +228,8 @@ function Pos() {
       })
     );
   };
-// exchangeRate
-  const exchangeRate = 4100;
+  // exchangeRate
+  const exchangeRate = 4001;
 
   return (
     <div className="pos-page">
@@ -473,10 +474,10 @@ function Pos() {
                         className="receipt-row"
                         key={item.productId || item._id || index}
                       >
-                        <span>{item.name}</span>
+                        <span className="receipt-item-name">{item.name}</span>
                         <span>{qty}</span>
                         <span>${price.toFixed(2)}</span>
-                        <span>${rowDiscount.toFixed(2)}</span>
+                        <span>{rowDiscount > 0 ? `$${rowDiscount.toFixed(2)}` : "-"}</span>
                         <span>${rowFinal.toFixed(2)}</span>
                       </div>
                     );
@@ -521,7 +522,7 @@ function Pos() {
               <span></span>
               <span>តម្លៃសរុបគិតជារៀល</span>
               <span>
-                ៛{(Number(receiptData.total || 0) * 4100).toLocaleString()}
+                {(Number(receiptData.total || 0) * exchangeRate).toLocaleString()} រៀល
               </span>
             </div>
 
@@ -530,6 +531,14 @@ function Pos() {
               <span>ប្រាក់ទទួល</span>
               <span>${Number(receiptData.amountReceived || 0).toFixed(2)}</span>
             </div>
+
+            {Number(receiptData.dueAmount || 0) > 0 && (
+              <div className="receipt-row receipt-total-row">
+                <span></span>
+                <span>ទឹកប្រាក់ជំពាក់</span>
+                <span>${Number(receiptData.dueAmount || 0).toFixed(2)}</span>
+              </div>
+            )}
 
             <div className="receipt-row receipt-total-row">
               <span></span>

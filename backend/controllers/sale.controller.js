@@ -4,6 +4,17 @@ const Product = require("../models/Product");
 const makeInvoiceNo = () => {
   return "INV-" + Date.now();
 };
+const dueAmount = Number(
+  Math.max(finalGrandTotal - finalAmountReceived, 0).toFixed(2)
+);
+
+let paymentStatus = "paid";
+if (finalAmountReceived <= 0) {
+  paymentStatus = "unpaid";
+} else if (dueAmount > 0) {
+  paymentStatus = "partial";
+}
+
 
 exports.getSales = async (req, res) => {
   try {
@@ -96,13 +107,18 @@ exports.createSale = async (req, res) => {
     const changeBack = Number(
       Math.max(finalAmountReceived - finalGrandTotal, 0).toFixed(2)
     );
+    const dueAmount = Number(
+      Math.max(finalGrandTotal - finalAmountReceived, 0).toFixed(2)
+    );
 
-    if (finalAmountReceived < finalGrandTotal) {
-      return res.status(400).json({
-        success: false,
-        message: "ប្រាក់ដែលទទួលមិនគ្រប់",
-      });
+
+    let paymentStatus = "paid";
+    if (finalAmountReceived <= 0) {
+      paymentStatus = "unpaid";
+    } else if (dueAmount > 0) {
+      paymentStatus = "partial";
     }
+
 
     const sale = await Sale.create({
       invoiceNo: makeInvoiceNo(),

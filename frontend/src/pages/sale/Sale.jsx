@@ -11,6 +11,8 @@ function Sale() {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
+
+
   const getSales = async () => {
     try {
       const res = await axiosInstance.get("/sale");
@@ -27,6 +29,8 @@ function Sale() {
         tax: item.tax || 0,
         amountReceived: item.amountReceived || 0,
         changeBack: item.changeBack || 0,
+        dueAmount: item.dueAmount || 0,
+        paymentStatus: item.paymentStatus || "paid",
       }));
       setSales(apiSales);
     } catch (error) {
@@ -219,7 +223,7 @@ function Sale() {
             <div className="receipt-divider"></div>
 
             <div className="receipt-items">
-              
+
 
               {selectedSale.items?.length > 0 ? (
                 selectedSale.items.map((item, index) => (
@@ -265,6 +269,24 @@ function Sale() {
               <div className="receipt-row">
                 <span>Change</span>
                 <span>${Number(selectedSale.changeBack).toFixed(2)}</span>
+              </div>
+
+              {Number(selectedSale.dueAmount || 0) > 0 && (
+                <div className="receipt-row">
+                  <span>Due</span>
+                  <span>${Number(selectedSale.dueAmount).toFixed(2)}</span>
+                </div>
+              )}
+
+              <div className="receipt-row">
+                <span>Status</span>
+                <span>
+                  {selectedSale.paymentStatus === "paid"
+                    ? "បានបង់រួច"
+                    : selectedSale.paymentStatus === "partial"
+                      ? "បង់បានខ្លះ"
+                      : "មិនទាន់បង់"}
+                </span>
               </div>
             </div>
 
