@@ -599,8 +599,8 @@ function Pos() {
           <div className="receipt-box">
             <div className="receipt-brand">
               <div className="logo">
-                <img src={logo} alt="Logo" />
-                <h1 className="receipt-title">MASTERIT POS</h1>
+                <img src={logo} alt="Logo" width="70" height="70"/>
+                <h1 className="receipt-title">VT GARAGE</h1>
               </div>
 
               <p className="receipt-subtitle">វិក័យប័ត្រទូទាត់</p>

@@ -69,6 +69,8 @@ function Dashboard() {
       const res = await axiosInstance.get("/report/dashboard-summary");
       const data = res?.data?.data || {};
 
+      console.log("Dashboard data:", data);
+
       setDashboard({
         summary: {
           totalProducts: Number(data.totalProducts || 0),
@@ -303,82 +305,82 @@ function Dashboard() {
             </div>
           </div>
 
-         <div className="bottom-grid">
-  <div className="table-card">
-    <div className="section-title">ការលក់ថ្មីៗ</div>
-    <div className="table-wrapper">
-      <table className="invoice-table">
-        <thead>
-          <tr>
-            <th>Invoice</th>
-            <th>អតិថិជន</th>
-            <th>សរុប</th>
-            <th>កាលបរិច្ឆេទ</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dashboard?.recentSales?.length > 0 ? (
-            dashboard.recentSales.map((sale) => (
-              <tr key={sale._id}>
-                <td>{sale.invoiceNo || "-"}</td>
-                <td>{sale.customerName || "Walk-in"}</td>
-                <td>
-                  ${Number(sale.grandTotal ?? sale.totalAmount ?? 0).toFixed(2)}
-                </td>
-                <td>{formatDate(sale.createdAt)}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="4" className="empty-text">
-                មិនទាន់មានទិន្នន័យ
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div className="side-info-grid">
-    <div className="info-card">
-      <div className="section-title">ទំនិញជិតអស់ស្តុក</div>
-      {dashboard?.lowStockProducts?.length > 0 ? (
-        dashboard.lowStockProducts.map((item) => (
-          <div key={item._id} className="list-item">
-            <div>
-              <strong>{item.name}</strong>
-              <p>{item.category || "-"}</p>
+          <div className="bottom-grid">
+            <div className="table-card">
+              <div className="section-title">ការលក់ថ្មីៗ</div>
+              <div className="table-wrapper">
+                <table className="invoice-table">
+                  <thead>
+                    <tr>
+                      <th>Invoice</th>
+                      <th>អតិថិជន</th>
+                      <th>សរុប</th>
+                      <th>កាលបរិច្ឆេទ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dashboard?.recentSales?.length > 0 ? (
+                      dashboard.recentSales.map((sale) => (
+                        <tr key={sale._id}>
+                          <td>{sale.invoiceNo || "-"}</td>
+                          <td>{sale.customerName || "Walk-in"}</td>
+                          <td>
+                            ${Number(sale.grandTotal ?? sale.totalAmount ?? 0).toFixed(2)}
+                          </td>
+                          <td>{formatDate(sale.createdAt)}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="empty-text">
+                          មិនទាន់មានទិន្នន័យ
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <span className="danger-badge">
-              {Number(item.stockQty || 0)}
-            </span>
-          </div>
-        ))
-      ) : (
-        <div className="empty-text">មិនមានទំនិញជិតអស់ទេ</div>
-      )}
-    </div>
 
-    <div className="info-card">
-      <div className="section-title">ទំនិញលក់ដាច់ជាងគេ</div>
-      {dashboard?.topProducts?.length > 0 ? (
-        dashboard.topProducts.map((item) => (
-          <div key={item._id} className="list-item">
-            <div>
-              <strong>{item.name}</strong>
+            <div className="side-info-grid">
+              <div className="info-card">
+                <div className="section-title">ទំនិញជិតអស់ស្តុក</div>
+                {dashboard?.lowStockProducts?.length > 0 ? (
+                  dashboard.lowStockProducts.map((item) => (
+                    <div key={item._id} className="list-item">
+                      <div>
+                        <strong>{item.name}</strong>
+                        <p>{item.category || "-"}</p>
+                      </div>
+                      <span className="danger-badge">
+                        {Number(item.stockQty || 0)}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="empty-text">មិនមានទំនិញជិតអស់ទេ</div>
+                )}
+              </div>
+
+              <div className="info-card">
+                <div className="section-title">ទំនិញលក់ដាច់ជាងគេ</div>
+                {dashboard?.topProducts?.length > 0 ? (
+                  dashboard.topProducts.map((item) => (
+                    <div key={item._id} className="list-item">
+                      <div>
+                        <strong>{item.name}</strong>
+                      </div>
+                      <span className="primary-badge">
+                        {Number(item.soldQty || 0)} sold
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="empty-text">មិនទាន់មានទិន្នន័យ</div>
+                )}
+              </div>
             </div>
-            <span className="primary-badge">
-              {Number(item.soldQty || 0)} sold
-            </span>
           </div>
-        ))
-      ) : (
-        <div className="empty-text">មិនទាន់មានទិន្នន័យ</div>
-      )}
-    </div>
-  </div>
-</div>
         </>
       )}
     </div>

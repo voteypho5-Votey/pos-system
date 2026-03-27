@@ -1,11 +1,11 @@
-const router = require("express").Router();
+const express = require("express");
+const router = express.Router();
+
 const {
-   
   getIncomeReport,
   getStockReport,
   getDashboardSummary,
 } = require("../controllers/report.controller");
-
 
 router.get("/income", getIncomeReport);
 router.get("/stock", getStockReport);
