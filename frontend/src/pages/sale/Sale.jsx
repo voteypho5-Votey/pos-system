@@ -211,13 +211,13 @@ function Sale() {
       {showReceipt && selectedSale && (
         <div className="receipt-overlay">
           <div className="receipt-box">
-            <h2 className="receipt-title">MASTERIT POS</h2>
-            <p className="receipt-sub">វិក័យប័ត្រ</p>
+            <h2 className="receipt-title">VT GARAGE</h2>
+            <p className="receipt-sub">លេខវិក័យប័ត្រ</p>
 
             <div className="receipt-header-info">
-              <p>Invoice: {selectedSale.invoice}</p>
-              <p>Cashier: {selectedSale.seller}</p>
-              <p>Date: {selectedSale.date}</p>
+              <p>វិក័យប័ត្រ: {selectedSale.invoice}</p>
+              <p>អ្នកគិតប្រាក់: {selectedSale.seller}</p>
+              <p>ថ្ងៃខែឆ្នាំ: {selectedSale.date}</p>
             </div>
 
             <div className="receipt-divider"></div>
@@ -242,38 +242,46 @@ function Sale() {
 
             <div className="receipt-summary">
               <div className="receipt-row">
-                <span>Subtotal</span>
+                <span>ទឹកប្រាក់សរុប</span>
                 <span>${Number(selectedSale.subtotal).toFixed(2)}</span>
               </div>
 
               <div className="receipt-row discount">
-                <span>Discount ({selectedSale.discount}%)</span>
+                <span>បញ្ចុះតម្លៃ ({selectedSale.discount}%)</span>
                 <span>-${Number(selectedSale.discountAmount).toFixed(2)}</span>
               </div>
 
               <div className="receipt-row">
-                <span>Tax</span>
+                <span>ពន្ធ​ Tax</span>
                 <span>${Number(selectedSale.tax).toFixed(2)}</span>
               </div>
 
               <div className="receipt-row total">
-                <span>Total</span>
+                <span>តម្លៃសរុប</span>
                 <span>${Number(selectedSale.total).toFixed(2)}</span>
               </div>
 
+              <div className="receipt-total-row">
+                <span>តម្លៃសរុបគិតជារៀល</span>
+                <span>
+                  ៛
+                  {(Number(receiptData.total || 0) * exchangeRate).toLocaleString()}
+                </span>
+              </div>
+
               <div className="receipt-row">
-                <span>Received</span>
+                <span>ប្រាក់ទទួល</span>
                 <span>${Number(selectedSale.amountReceived).toFixed(2)}</span>
               </div>
 
               <div className="receipt-row">
-                <span>Change</span>
+                <span>ទឹកប្រាក់ជំពាក់</span>
                 <span>${Number(selectedSale.changeBack).toFixed(2)}</span>
               </div>
 
               {Number(selectedSale.dueAmount || 0) > 0 && (
                 <div className="receipt-row">
-                  <span>Due</span>
+                  <span>ប្រាក់អាប់</span>
                   <span>${Number(selectedSale.dueAmount).toFixed(2)}</span>
                 </div>
               )}
