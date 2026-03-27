@@ -248,9 +248,8 @@ function Pos() {
 
           <div className="category-tabs">
             <button
-              className={`category-btn ${
-                activeCategory === "ទាំងអស់" ? "active-category" : ""
-              }`}
+              className={`category-btn ${activeCategory === "ទាំងអស់" ? "active-category" : ""
+                }`}
               onClick={() => setActiveCategory("ទាំងអស់")}
             >
               ទាំងអស់
@@ -259,9 +258,8 @@ function Pos() {
             {categories.map((cat) => (
               <button
                 key={cat._id}
-                className={`category-btn ${
-                  activeCategory === cat.name ? "active-category" : ""
-                }`}
+                className={`category-btn ${activeCategory === cat.name ? "active-category" : ""
+                  }`}
                 onClick={() => setActiveCategory(cat.name)}
               >
                 {cat.name}
@@ -451,7 +449,7 @@ function Pos() {
         </div>
       </div>
 
-      {showReceipt && receiptData && (
+      {/* {showReceipt && receiptData && (
         <div className="receipt-overlay">
           <div className="receipt-box">
             <h1 className="receipt-title">MASTERIT POS</h1>
@@ -588,6 +586,159 @@ function Pos() {
               <button className="receipt-finish-btn" onClick={finishSale}>
                 រួចរាល់
               </button>
+              <button className="receipt-print-btn" onClick={handlePrint}>
+                🖨️ បោះពុម្ព
+              </button>
+            </div>
+          </div>
+        </div>
+      )} */}
+      {showReceipt && receiptData && (
+        <div className="receipt-overlay">
+          <div className="receipt-box">
+            <div className="receipt-brand">
+              <div className="Logo">
+                <img src="https://www.facebook.com/photo/?fbid=122135103650291937&set=a.122106961076291937" alt="HTML5 Icon" width="100" height="50"/>
+                <h1 className="receipt-title">MASTERIT POS</h1>
+                </div>
+
+              <p className="receipt-subtitle">វិក័យប័ត្រទូទាត់</p>
+            </div>
+
+            <div className="receipt-head">
+              <div className="receipt-left">
+                <h3>ព័ត៌មានវិក័យប័ត្រ</h3>
+                <p>លេខវិក័យប័ត្រ: {receiptData.invoice}</p>
+                <p>កាលបរិច្ឆេទ: {receiptData.date}</p>
+              </div>
+
+              <div className="receipt-right">
+                <p>
+                  ស្ថានភាព៖{" "}
+                  <span
+                    className={`status-badge ${receiptData.paymentStatus === "paid"
+                        ? "paid"
+                        : receiptData.paymentStatus === "partial"
+                          ? "partial"
+                          : "unpaid"
+                      }`}
+                  >
+                    {receiptData.paymentStatus === "paid"
+                      ? "បានបង់រួច"
+                      : receiptData.paymentStatus === "partial"
+                        ? "បង់បានខ្លះ"
+                        : "មិនទាន់បង់"}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div className="receipt-divider" />
+
+            <div className="receipt-table">
+              <div className="receipt-header-row">
+                <span>មុខទំនិញ</span>
+                <span>ចំនួន</span>
+                <span>តម្លៃរាយ</span>
+                <span>បញ្ចុះតម្លៃ</span>
+                <span>សរុប</span>
+              </div>
+
+              <div className="receipt-rowLigh">
+                {receiptData.items && receiptData.items.length > 0 ? (
+                  receiptData.items.map((item, index) => {
+                    const qty = Number(item.qty || 0);
+                    const price = Number(item.price || 0);
+                    const rowTotal = price * qty;
+                    const rowDiscount = Number(item.discount || 0);
+                    const rowFinal = Number(item.total || rowTotal - rowDiscount);
+
+                    return (
+                      <div
+                        className="receipt-row"
+                        key={item.productId || item._id || index}
+                      >
+                        <span className="receipt-item-name">{item.name}</span>
+                        <span>{qty}</span>
+                        <span>${price.toFixed(2)}</span>
+                        <span>{rowDiscount > 0 ? `$${rowDiscount.toFixed(2)}` : "-"}</span>
+                        <span>${rowFinal.toFixed(2)}</span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="receipt-row">
+                    <span>មិនមានទំនិញ</span>
+                    <span>-</span>
+                    <span>-</span>
+                    <span>-</span>
+                    <span>-</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="receipt-summary">
+              <div className="receipt-total-row">
+                <span>ទឹកប្រាក់សរុប</span>
+                <span>${Number(receiptData.subtotal || 0).toFixed(2)}</span>
+              </div>
+
+              <div className="receipt-total-row">
+                <span>បញ្ចុះតម្លៃ ({receiptData.discount || 0}%)</span>
+                <span>- ${Number(receiptData.discountAmount || 0).toFixed(2)}</span>
+              </div>
+
+              <div className="receipt-total-row">
+                <span>ពន្ធ</span>
+                <span>${Number(receiptData.tax || 0).toFixed(2)}</span>
+              </div>
+
+              <div className="receipt-total-row grand-row">
+                <span>តម្លៃសរុប</span>
+                <span>${Number(receiptData.total || 0).toFixed(2)}</span>
+              </div>
+
+              <div className="receipt-total-row">
+                <span>តម្លៃសរុបគិតជារៀល</span>
+                <span>
+                  ៛
+                  {(Number(receiptData.total || 0) * exchangeRate).toLocaleString()}
+                </span>
+              </div>
+
+              <div className="receipt-total-row">
+                <span>ប្រាក់ទទួល</span>
+                <span>${Number(receiptData.amountReceived || 0).toFixed(2)}</span>
+              </div>
+
+              {Number(receiptData.dueAmount || 0) > 0 && (
+                <div className="receipt-total-row due-row">
+                  <span>ទឹកប្រាក់ជំពាក់</span>
+                  <span>${Number(receiptData.dueAmount || 0).toFixed(2)}</span>
+                </div>
+              )}
+
+              {Number(receiptData.changeBack || 0) > 0 && (
+                <div className="receipt-total-row change-row">
+                  <span>ប្រាក់អាប់</span>
+                  <span>${Number(receiptData.changeBack || 0).toFixed(2)}</span>
+                </div>
+              )}
+
+              <div className="receipt-footer-note">
+                <p>សូមអរគុណសម្រាប់ការទិញទំនិញ</p>
+                <p>ទំនាក់ទំនង: 012 345 678</p>
+              </div>
+            </div>
+
+
+
+            <div className="receipt-buttons">
+              <button className="receipt-close-btn" onClick={closeReceipt}>
+                បិទ
+              </button>
+
               <button className="receipt-print-btn" onClick={handlePrint}>
                 🖨️ បោះពុម្ព
               </button>
