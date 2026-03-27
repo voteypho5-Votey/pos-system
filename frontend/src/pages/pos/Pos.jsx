@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axiosInstance from "../../services/axiosInstance";
+import logo from "../../assets/logo vt.jpg";
 import "./pos.css";
 
 function Pos() {
@@ -597,10 +598,10 @@ function Pos() {
         <div className="receipt-overlay">
           <div className="receipt-box">
             <div className="receipt-brand">
-              <div className="Logo">
-                <img src="https://www.facebook.com/photo/?fbid=122135103650291937&set=a.122106961076291937" alt="HTML5 Icon" width="100" height="50"/>
+              <div className="logo">
+                <img src={logo} alt="Logo" />
                 <h1 className="receipt-title">MASTERIT POS</h1>
-                </div>
+              </div>
 
               <p className="receipt-subtitle">វិក័យប័ត្រទូទាត់</p>
             </div>
@@ -617,10 +618,10 @@ function Pos() {
                   ស្ថានភាព៖{" "}
                   <span
                     className={`status-badge ${receiptData.paymentStatus === "paid"
-                        ? "paid"
-                        : receiptData.paymentStatus === "partial"
-                          ? "partial"
-                          : "unpaid"
+                      ? "paid"
+                      : receiptData.paymentStatus === "partial"
+                        ? "partial"
+                        : "unpaid"
                       }`}
                   >
                     {receiptData.paymentStatus === "paid"
