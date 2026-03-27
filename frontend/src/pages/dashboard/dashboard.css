@@ -3,7 +3,18 @@
   padding: 0;
   box-sizing: border-box;
 }
+.chart-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+}
 
+.chart-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
 .dashboard-header {
   display: flex;
   justify-content: space-between;

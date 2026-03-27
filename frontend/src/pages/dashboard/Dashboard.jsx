@@ -189,6 +189,8 @@ function Dashboard() {
     return date.toLocaleDateString();
   };
 
+
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-header">
