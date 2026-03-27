@@ -15,6 +15,8 @@ function Pos() {
   const [tax, setTax] = useState(0);
   const [amountReceived, setAmountReceived] = useState(0);
 
+ 
+
   const getCategories = async () => {
     try {
       const res = await axiosInstance.get("/category");
@@ -137,65 +139,65 @@ function Pos() {
   });
 
   const handleCheckout = async () => {
-  if (cart.length === 0) {
-    alert("សូមជ្រើសទំនិញជាមុន");
-    return;
-  }
+    if (cart.length === 0) {
+      alert("សូមជ្រើសទំនិញជាមុន");
+      return;
+    }
 
-  if (finalAmountReceived < finalGrandTotal) {
-    alert("ប្រាក់ទទួលមិនគ្រប់");
-    return;
-  }
+    if (finalAmountReceived < finalGrandTotal) {
+      alert("ប្រាក់ទទួលមិនគ្រប់");
+      return;
+    }
 
-  try {
-    const payload = {
-      items: cart.map((item) => ({
-        productId: item._id,
-        name: item.name,
-        qty: item.qty,
-        price: Number(item.price),
-        discount: Number(item.discount) || 0,
-        total: Number(
-          (item.price * item.qty - (Number(item.discount) || 0)).toFixed(2)
-        ),
-      })),
+    try {
+      const payload = {
+        items: cart.map((item) => ({
+          productId: item._id,
+          name: item.name,
+          qty: item.qty,
+          price: Number(item.price),
+          discount: Number(item.discount) || 0,
+          total: Number(
+            (item.price * item.qty - (Number(item.discount) || 0)).toFixed(2)
+          ),
+        })),
 
-      subtotal: finalSubtotal,
-      discount: safeDiscount,
-      discountAmount,
-      tax: safeTax,
-      grandTotal: finalGrandTotal,
-      amountReceived: finalAmountReceived,
-      changeBack,
-      cashier: "Cashier",
-    };
+        subtotal: finalSubtotal,
+        discount: safeDiscount,
+        discountAmount,
+        tax: safeTax,
+        grandTotal: finalGrandTotal,
+        amountReceived: finalAmountReceived,
+        changeBack,
+        cashier: "Cashier",
+      };
 
-    console.log("PAYLOAD:", payload);
+      console.log("PAYLOAD:", payload);
 
-    const res = await axiosInstance.post("/sale", payload);
-    const sale = res.data.data;
+      const res = await axiosInstance.post("/sale", payload);
+      const sale = res.data.data;
 
-    setReceiptData({
-      invoice: sale.invoiceNo,
-      date: new Date(sale.createdAt).toLocaleString(),
-      items: sale.items || [],
-      subtotal: sale.subtotal || 0,
-      discount: sale.discount || 0,
-      discountAmount: sale.discountAmount || 0,
-      tax: sale.tax || 0,
-      total: sale.grandTotal || 0,
-      amountReceived: sale.amountReceived || 0,
-      changeBack: sale.changeBack || 0,
-    });
+      setReceiptData({
+        invoice: sale.invoiceNo,
+        date: new Date(sale.createdAt).toLocaleString(),
+        items: sale.items || [],
+        subtotal: sale.subtotal || 0,
+        discount: sale.discount || 0,
+        discountAmount: sale.discountAmount || 0,
+        tax: sale.tax || 0,
+        total: sale.grandTotal || 0,
+        amountReceived: sale.amountReceived || 0,
+        changeBack: sale.changeBack || 0,
+      });
 
-    setShowReceipt(true);
-    await getProducts();
+      setShowReceipt(true);
+      await getProducts();
 
-  } catch (error) {
-    console.log("SALE ERROR:", error.response?.data || error.message);
-    alert(error?.response?.data?.message || "បង់ប្រាក់មិនបាន");
-  }
-};
+    } catch (error) {
+      console.log("SALE ERROR:", error.response?.data || error.message);
+      alert(error?.response?.data?.message || "បង់ប្រាក់មិនបាន");
+    }
+  };
   const closeReceipt = () => {
     setShowReceipt(false);
   };
@@ -225,6 +227,8 @@ function Pos() {
       })
     );
   };
+// exchangeRate
+  const exchangeRate = 4100;
 
   return (
     <div className="pos-page">
@@ -405,7 +409,7 @@ function Pos() {
 
           <div className="cart-total-row">
             <span>ទឹកប្រាក់សរុប</span>
-            <span className="total-price">${grandTotal.toFixed(2)}</span>
+            <span className="total-price">${finalGrandTotal.toFixed(2)}</span>
           </div>
 
           <div className="cart-total-row">
@@ -448,14 +452,19 @@ function Pos() {
 
             <div className="receipt-table">
               <div className="receipt-row receipt-header-row">
-                <span>មុខម្ហូប</span>
+                <span>មុខទំនិញ</span>
                 <span>ចំនួន</span>
-                <span>តម្លៃ</span>
+                <span>តម្លៃរាយ</span>
+                <span>បញ្ចុះតម្លៃ $</span>
+                <span>តម្លៃសរុប</span>
               </div>
+
               <div className="receipt-rowLigh">
                 {receiptData.items && receiptData.items.length > 0 ? (
                   receiptData.items.map((item, index) => {
-                    const rowTotal = Number(item.price || 0) * Number(item.qty || 0);
+                    const qty = Number(item.qty || 0);
+                    const price = Number(item.price || 0);
+                    const rowTotal = price * qty;
                     const rowDiscount = Number(item.discount || 0);
                     const rowFinal = Number(item.total || rowTotal - rowDiscount);
 
@@ -464,16 +473,10 @@ function Pos() {
                         className="receipt-row"
                         key={item.productId || item._id || index}
                       >
-                        <span>
-                          {item.name}
-                          {rowDiscount > 0 && (
-                            <small className="receipt-item-discount">
-                              {" "}
-                              (-${rowDiscount.toFixed(2)})
-                            </small>
-                          )}
-                        </span>
-                        <span>{item.qty}</span>
+                        <span>{item.name}</span>
+                        <span>{qty}</span>
+                        <span>${price.toFixed(2)}</span>
+                        <span>${rowDiscount.toFixed(2)}</span>
                         <span>${rowFinal.toFixed(2)}</span>
                       </div>
                     );
@@ -481,6 +484,8 @@ function Pos() {
                 ) : (
                   <div className="receipt-row">
                     <span>មិនមានទំនិញ</span>
+                    <span>-</span>
+                    <span>-</span>
                     <span>-</span>
                     <span>-</span>
                   </div>
@@ -497,9 +502,7 @@ function Pos() {
             <div className="receipt-row receipt-total-row">
               <span></span>
               <span>បញ្ចុះតម្លៃ ({receiptData.discount || 0}%)</span>
-              <span>
-                -${Number(receiptData.discountAmount || 0).toFixed(2)}
-              </span>
+              <span>-${Number(receiptData.discountAmount || 0).toFixed(2)}</span>
             </div>
 
             <div className="receipt-row receipt-total-row">
@@ -510,8 +513,16 @@ function Pos() {
 
             <div className="receipt-row receipt-total-row">
               <span></span>
-              <span>ចំនួនសរុប</span>
+              <span>តម្លៃសរុប</span>
               <span>${Number(receiptData.total || 0).toFixed(2)}</span>
+            </div>
+
+            <div className="receipt-row receipt-total-row">
+              <span></span>
+              <span>តម្លៃសរុបគិតជារៀល</span>
+              <span>
+                ៛{(Number(receiptData.total || 0) * 4100).toLocaleString()}
+              </span>
             </div>
 
             <div className="receipt-row receipt-total-row">
