@@ -10,6 +10,7 @@ const productRoutes = require("./routes/product.route");
 const categoryRoute = require("./routes/category.route");
 const saleRoute = require("./routes/sale.route");
 const reportRoute = require("./routes/report.route");
+const exchangeRoutes = require("./routes/exchange.route");
 
 
 const app = express();
@@ -38,6 +39,7 @@ app.use("/api/category", categoryRoute);
 app.use("/api/sale", saleRoute);
 app.use("/api/report", reportRoute);
 app.use("/api/stock-report", reportRoute);
+app.use("/api/exchange", exchangeRoutes);
 
 app.get("/", (req, res) => {
   res.send("MASTERIT POS API running...");
