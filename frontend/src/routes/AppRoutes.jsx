@@ -15,7 +15,7 @@ import Sale from "../pages/sale/Sale";
 import Pos from "../pages/pos/Pos";
 import IncomeReport from "../pages/reports/IncomeReport";
 import StockReport from "../pages/reports/StockReport";
-import Report from "../pages/Report";
+// import Report from "../pages/Report";
 import Exchange from "../pages/Exchange/Exchange";
 
 function AppRoutes() {

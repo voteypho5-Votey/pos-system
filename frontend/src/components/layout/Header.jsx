@@ -24,7 +24,7 @@ function Header({ onMenuClick }) {
         <button className="menu-toggle-btn" onClick={onMenuClick}>
           ☰
         </button>
-        <h3>MASTERIT POS</h3>
+        <h3>VT GARAGE POS</h3>
       </div>
 
       <div>

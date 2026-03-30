@@ -38,7 +38,7 @@ function Sidebar() {
             }
           >
             <FaLayerGroup className="menu-icon" />
-            <span>ប្រភេទទំនិញ</span>
+            <span>ប្រភេទសេវ៉ាកម្ម</span>
           </NavLink>
 
           <NavLink
@@ -48,7 +48,7 @@ function Sidebar() {
             }
           >
             <FaBoxOpen className="menu-icon" />
-            <span>ទំនិញ</span>
+            <span>សេវ៉ាកម្ម</span>
           </NavLink>
         </>
       )}
@@ -59,7 +59,7 @@ function Sidebar() {
       >
         <div className="menu-dropdown-left">
           <FaCashRegister className="menu-icon" />
-          <span>POS ការលក់</span>
+          <span>POS ប្រតិបត្តិការ</span>
         </div>
         {openPosMenu ? <FaChevronDown /> : <FaChevronRight />}
       </div>
@@ -72,7 +72,7 @@ function Sidebar() {
               isActive ? "submenu-item active-submenu" : "submenu-item"
             }
           >
-            បញ្ជីការលក់
+            បញ្ជីប្រតិបត្តិការ
           </NavLink>
 
           <NavLink

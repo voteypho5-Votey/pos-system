@@ -129,9 +129,9 @@ const openAddModal = () => {
   return (
     <div className="category-page">
       <div className="category-header">
-        <h2>ប្រភេទទំនិញ</h2>
+        <h2>ប្រភេទសេវ៉ាកម្ម</h2>
         <button className="category-add-btn" onClick={openAddModal}>
-          + បន្ថែមថ្មី
+          + បន្ថែមប្រភេទសេវ៉ាកម្មថ្មី
         </button>
       </div>
 
@@ -171,7 +171,7 @@ const openAddModal = () => {
           <thead>
             <tr>
               <th>ល.រ</th>
-              <th>ប្រភេទទំនិញ</th>
+              <th>ប្រភេទទំនិញនិងសេវ៉ាកម្ម</th>
               <th>ពិណ៏នា</th>
               <th>សកម្មភាព</th>
             </tr>
@@ -223,7 +223,7 @@ const openAddModal = () => {
         <div className="category-modal-overlay">
           <div className="category-modal-box">
             <div className="category-modal-header">
-              <h3>កែប្រែប្រភេទទំនិញ</h3>
+              <h3>កែប្រែប្រភេទសេវ៉ាកម្ម</h3>
               <button className="category-close-btn" onClick={closeModal}>
                 ×
               </button>
@@ -231,12 +231,12 @@ const openAddModal = () => {
 
             <form onSubmit={handleSubmit}>
               <div className="category-form-group">
-                <label>ប្រភេទទំនិញ</label>
+                <label>ប្រភេទទំនិញនិងសេវ៉ាកម្ម</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="បញ្ចូលប្រភេទទំនិញ"
+                  placeholder="ប្រភេទទំនិញនិងសេវ៉ាកម្ម"
                 />
               </div>
 

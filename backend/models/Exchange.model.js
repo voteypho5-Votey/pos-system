@@ -10,6 +10,8 @@ const exchangeSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+  
+}, { timestamps: true } // ✅ add this
+);
 
 module.exports = mongoose.model("Exchange", exchangeSchema);

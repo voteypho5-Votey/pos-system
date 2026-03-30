@@ -5,6 +5,8 @@ import { Toaster } from "react-hot-toast";
 import App from "./App";
 import "./index.css";
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>

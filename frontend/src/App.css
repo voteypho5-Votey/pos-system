@@ -291,3 +291,6 @@ table td {
 button{
   width: auto;
 }
+.table-wrapper th{
+  color: #111827;
+}

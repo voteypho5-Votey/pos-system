@@ -196,7 +196,7 @@ function Dashboard() {
       <div className="dashboard-header">
         <div>
           <h2>ផ្ទាំងគ្រប់គ្រង</h2>
-          <p>សង្ខេបទិន្នន័យសំខាន់ៗនៃប្រព័ន្ធ MASTERIT POS</p>
+          <p>សង្ខេបទិន្នន័យសំខាន់ៗនៃប្រព័ន្ធ VT GARAGE POS </p>
         </div>
 
         <button className="refresh-btn" onClick={getDashboardData}>
@@ -259,7 +259,7 @@ function Dashboard() {
             </div>
 
             <div className="chart-card">
-              <div className="chart-title">ប្រភេទទំនិញ</div>
+              <div className="chart-title">ប្រភេទសេវ៉ាកម្ម</div>
               <div className="chart-box">
                 <Doughnut
                   data={categoryDoughnutData}
@@ -284,7 +284,7 @@ function Dashboard() {
                 className="action-btn"
                 onClick={() => navigate("/product")}
               >
-                <FaPlusCircle /> បន្ថែមទំនិញ
+                <FaPlusCircle /> បន្ថែមសេវ៉ាកម្ម
               </button>
 
               <button className="action-btn" onClick={() => navigate("/pos")}>
@@ -365,7 +365,7 @@ function Dashboard() {
               </div>
 
               <div className="info-card">
-                <div className="section-title">ទំនិញលក់ដាច់ជាងគេ</div>
+                <div className="section-title">ទំនិញនិងសេវ៉ាកម្មលក់ដាច់ជាងគេ</div>
                 {dashboard?.topProducts?.length > 0 ? (
                   dashboard.topProducts.map((item) => (
                     <div key={item._id} className="list-item">
