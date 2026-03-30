@@ -119,14 +119,14 @@ function Sidebar() {
                 របាយការណ៍ស្តុក
               </NavLink>
 
-              <NavLink
+              {/* <NavLink
                 to="/report"
                 className={({ isActive }) =>
                   isActive ? "submenu-item active-submenu" : "submenu-item"
                 }
               >
                 Report
-              </NavLink>
+              </NavLink> */}
 
               <NavLink
                 to="/exchange"

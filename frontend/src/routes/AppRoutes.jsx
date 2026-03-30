@@ -79,14 +79,14 @@ function AppRoutes() {
           }
         />
 
-        <Route
+        {/* <Route
           path="report"
           element={
             <RoleRoute allowRoles={["admin"]}>
               <Report />
             </RoleRoute>
           }
-        />
+        /> */}
 
         <Route
           path="sale"
@@ -114,7 +114,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
-        
+
       </Route>
       
 
