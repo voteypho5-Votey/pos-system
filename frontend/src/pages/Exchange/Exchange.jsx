@@ -68,15 +68,15 @@ function Exchange() {
 
 
   const handleSave = async () => {
-  try {
-    await axios.post("/exchange", { rate: Number(rate) });
-    toast.success("Saved!");
-    setRate("");
-    fetchExchangeList();
-  } catch (err) {
-    toast.error("Error!");
-  }
-};
+    try {
+      await axios.post("/exchange", { rate: Number(rate) });
+      toast.success("Saved!");
+      setRate("");
+      fetchExchangeList();
+    } catch (err) {
+      toast.error("Error!");
+    }
+  };
 
   const handleSearch = async () => {
     try {
@@ -104,6 +104,7 @@ function Exchange() {
 
 
   return (
+   <div className="layout-content">
     <div className="exchange-page">
       <div className="exchange-grid">
         {/* Left */}
@@ -190,6 +191,7 @@ function Exchange() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
