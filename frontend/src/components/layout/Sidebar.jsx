@@ -127,6 +127,15 @@ function Sidebar() {
               >
                 Report
               </NavLink>
+
+              <NavLink
+                to="/exchange"
+                className={({ isActive }) =>
+                  isActive ? "menu-item active" : "menu-item"
+                }
+              >
+                <span>Exchange Rate</span>
+              </NavLink>
             </div>
           )}
         </>

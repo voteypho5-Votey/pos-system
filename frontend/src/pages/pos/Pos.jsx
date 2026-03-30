@@ -16,7 +16,24 @@ function Pos() {
   const [tax, setTax] = useState(0);
   const [amountReceived, setAmountReceived] = useState("");
 
-  const exchangeRate = 4001;
+  const [exchangeRate, setExchangeRate] = useState(4100);
+
+  useEffect(() => {
+    const fetchLatestRate = async () => {
+      try {
+        const res = await axiosInstance.get("/exchange/latest");
+        setExchangeRate(res.data?.rate || 4100);
+      } catch (error) {
+        setExchangeRate(4100);
+      }
+    };
+
+    fetchLatestRate();
+  }, []);
+const totalUSD = Number(receiptData?.total || 0);
+const totalKHR = totalUSD * Number(exchangeRate || 0);
+
+
 
   const getCategories = async () => {
     try {
@@ -599,7 +616,7 @@ function Pos() {
           <div className="receipt-box">
             <div className="receipt-brand">
               <div className="logo">
-                <img src={logo} alt="Logo" width="70" height="70"/>
+                <img src={logo} alt="Logo" width="70" height="70" />
                 <h1 className="receipt-title">VT GARAGE</h1>
               </div>
 
@@ -704,7 +721,7 @@ function Pos() {
                 <span>តម្លៃសរុបគិតជារៀល</span>
                 <span>
                   ៛
-                  {(Number(receiptData.total || 0) * exchangeRate).toLocaleString()}
+                  {Math.round(Number(receiptData.total || 0) * exchangeRate).toLocaleString()}
                 </span>
               </div>
 

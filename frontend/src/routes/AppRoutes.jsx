@@ -16,6 +16,7 @@ import Pos from "../pages/pos/Pos";
 import IncomeReport from "../pages/reports/IncomeReport";
 import StockReport from "../pages/reports/StockReport";
 import Report from "../pages/Report";
+import Exchange from "../pages/Exchange/Exchange";
 
 function AppRoutes() {
   const user = useAuthStore((state) => state.user);
@@ -105,6 +106,18 @@ function AppRoutes() {
           }
         />
       </Route>
+      
+
+      
+        <Route
+          path="exchange"
+          element={
+            <RoleRoute allowRoles={["admin"]}>
+              <Exchange />
+            </RoleRoute>
+          }
+        />
+      
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

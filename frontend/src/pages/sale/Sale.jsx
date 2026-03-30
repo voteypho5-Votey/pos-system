@@ -11,7 +11,13 @@ function Sale() {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
+ const [exchangeRate, setExchangeRate] = useState(4100);
 
+// useEffect(() => {
+//   axios.get("/api/exchange-rate").then(res => {
+//     setExchangeRate(res.data.rate);
+//   });
+// }, []);
 
   const getSales = async () => {
     try {
