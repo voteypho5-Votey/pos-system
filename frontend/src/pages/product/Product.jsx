@@ -3,7 +3,6 @@ import axiosInstance from "../../services/axiosInstance";
 import "./product.css";
 
 
-
 function Product() {
   const API_URL = "/product";
 
@@ -176,18 +175,19 @@ function Product() {
   };
 
   return (
-    <div className="product-content">
-      <div className="product-page-header">
+    <div className="product-page">
+      <div className="product-header">
         <h2>ទំនិញ</h2>
         <button className="product-add-btn" onClick={openAddModal}>
-          + បន្ថែមប្រភេទសេវ៉ាកម្មថ្មី
+          + បន្ថែមថ្មី
         </button>
       </div>
 
-      <div className="product-table-card">
-        <div className="product-table-tools">
+      <div className="product-card">
+
+        <div className="product-tools">
           <input
-            className="product-search-box"
+            className="product-search"
             type="text"
             placeholder="ស្វែងរក..."
             value={search}
@@ -195,73 +195,73 @@ function Product() {
           />
         </div>
 
-        <div className="table-wrapper">
-          <table className="product-table">
-            <thead className="category-table">
-              <tr>
-                <th>ល.រ</th>
-                <th>រូបភាព</th>
-                <th>ឈ្មោះទំនិញនិងសេវ៉ាកម្ម</th>
-                <th>ប្រភេទទំនិញនិងសេវ៉ាកម្ម</th>
-                <th>កូដទំនិញនិងសេវ៉ាកម្ម</th>
-                <th>ថ្លៃដើម</th>
-                <th>ថ្លៃលក់</th>
-                <th>ចំនួនស្តុក</th>
-                <th>ស្ថានភាព</th>
-                <th>សកម្មភាព</th>
-              </tr>
-            </thead>
+        <table className="product-table">
+          <thead>
+            <tr>
+              <th>ល.រ</th>
+              <th>រូបភាព</th>
+              <th>ឈ្មោះទំនិញ</th>
+              <th>ប្រភេទទំនិញ</th>
+              <th>កូដទំនិញ</th>
+              <th>ថ្លៃដើម</th>
+              <th>ថ្លៃលក់</th>
+              <th>ចំនួនស្តុក</th>
+              <th>ស្ថានភាព</th>
+              <th>សកម្មភាព</th>
+            </tr>
+          </thead>
 
-            <tbody>
-              {filteredProducts.length > 0 ? (
-                filteredProducts.map((item, index) => (
-                  <tr key={item._id}>
-                    <td>{index + 1}</td>
-                    <td>
-                      {item.image ? (
-                        <img
-                          src={`https://pos-system-ofv8.onrender.com${item.image}`}
-                          alt={item.name}
-                          className="product-thumb"
-                        />
-                      ) : (
-                        <div className="product-no-image">No Image</div>
-                      )}
-                    </td>
-                    <td>{item.name}</td>
-                    <td>{item.category}</td>
-                    <td>{item.code}</td>
-                    <td>{item.costPrice}$</td>
-                    <td>{item.salePrice}$</td>
-                    <td>{item.stockQty}</td>
-                    <td>{item.status}</td>
-                    <td className="submit-btn">
-                      <button
-                        className="product-action-btn edit-btn"
-                        onClick={() => openEditModal(item)}
-                      >
-                        កែប្រែ
-                      </button>
-                      <button
-                        className="product-action-btn delete-btn"
-                        onClick={() => handleDelete(item._id)}
-                      >
-                        លុប
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="10" className="no-data">
-                    មិនមានទិន្នន័យ
+          <tbody>
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((item, index) => (
+                <tr key={item._id}>
+                  
+                  <td data-label="ល.រ">{index + 1}</td>
+
+                  <td data-label="រូបភាព">
+                    {item.image ? (
+                      <img
+                        src={`https://pos-system-ofv8.onrender.com${item.image}`}
+                        alt={item.name}
+                        className="product-thumb"
+                      />
+                    ) : (
+                      <div className="product-no-image">No Image</div>
+                    )}
+                  </td>
+                  <td data-label="ឈ្មោះ">{item.name}</td>
+                  <td data-label="ប្រភេទ">{item.category}</td>
+                  <td data-label="កូដ">{item.code}</td>
+                  <td data-label="ថ្លៃដើម">{item.costPrice}$</td>
+                  <td data-label="ថ្លៃលក់">{item.salePrice}$</td>
+                  <td data-label="ស្តុក">{item.stockQty}</td>
+                  <td data-label="ស្ថានភាព">{item.status}</td>
+                  <td data-label="សកម្មភាព" className="td-button">
+
+                    <button
+                      className="product-edit-btn"
+                      onClick={() => openEditModal(item)}
+                    >
+                      កែប្រែ
+                    </button>
+                    <button
+                      className="product-delete-btn"
+                      onClick={() => handleDelete(item._id)}
+                    >
+                      លុប
+                    </button>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
+              ))
+            ) : (
+              <tr>
+                <td colSpan="10" className="product-empty">
+                  មិនមានទិន្នន័យ
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {showModal && (
@@ -276,7 +276,7 @@ function Product() {
 
 
             <form onSubmit={handleSubmit} className="product-form">
-              <div className="scroll">
+             
                 <div className="product-form-group">
                   <label>រូបភាព</label>
                   <input
@@ -387,7 +387,7 @@ function Product() {
                     </select>
                   </div>
                 </div>
-              </div>
+              
 
               <div className="product-modal-buttons">
                 <button

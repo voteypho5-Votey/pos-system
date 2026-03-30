@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axiosInstance from "../../services/axiosInstance";
 import "./category.css";
 
+
 function Category() {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
@@ -136,29 +137,7 @@ const openAddModal = () => {
       </div>
 
       <div className="category-card">
-        {/* <form className="category-form" onSubmit={addCategory}>
-          <input
-            className="category-input"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="បញ្ចូលប្រភេទ"
-          />
-
-          <select
-            className="category-select"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="មាន">មាន</option>
-            <option value="អសកម្ម">អសកម្ម</option>
-          </select>
-
-          <button className="category-add-btn" type="submit">
-            បន្ថែម
-          </button>
-        </form> */}
-
-        <div className="category-tools">
+              <div className="category-tools">
           <input
             className="category-search"
             value={search}
@@ -191,6 +170,7 @@ const openAddModal = () => {
                   <td>{item.name}</td>
                   <td>{item.status || "មាន"}</td>
                   <td className="td-button">
+
                     <button
                       type="button"
                       className="category-edit-btn"
