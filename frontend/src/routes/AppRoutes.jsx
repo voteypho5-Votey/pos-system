@@ -105,11 +105,8 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
-      </Route>
-      
 
-      
-        <Route
+         <Route
           path="exchange"
           element={
             <RoleRoute allowRoles={["admin"]}>
@@ -117,6 +114,11 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+      </Route>
+      
+
+      
+       
       
 
       <Route path="*" element={<Navigate to="/" replace />} />
