@@ -107,7 +107,7 @@
 }
 
 .product-card {
-  overflow: hidden;
+  /* overflow: hidden; */
   border: 1px solid var(--color-border);
   border-radius: 16px;
   background: #fff;
@@ -123,8 +123,8 @@
 }
 
 .product-images {
-  width: 100%;
-  height: 150px;
+  width: 50%;
+  height: auto;
   object-fit: cover;
   background: #ffffff;
 }

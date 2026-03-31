@@ -271,7 +271,7 @@ function Sale() {
                 <span>តម្លៃសរុបគិតជារៀល</span>
                 <span>
                   ៛
-                  {(Number(receiptData.total || 0) * exchangeRate).toLocaleString()}
+                  {(Number(selectedSale?.total ?? 0) * exchangeRate).toLocaleString()}
                 </span>
               </div>
 
