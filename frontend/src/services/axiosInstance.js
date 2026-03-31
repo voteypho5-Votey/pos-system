@@ -15,5 +15,8 @@ axiosInstance.interceptors.request.use((config) => {
 
   return config;
 });
+await axiosInstance.post(`/report/sale/pay/${id}`, {
+  amount: Number(amountDue),
+});
 
 export default axiosInstance;

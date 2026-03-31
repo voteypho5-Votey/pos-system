@@ -5,10 +5,13 @@ const {
   getIncomeReport,
   getStockReport,
   getDashboardSummary,
+   paySale,
 } = require("../controllers/report.controller");
 
 router.get("/income", getIncomeReport);
 router.get("/stock", getStockReport);
 router.get("/dashboard-summary", getDashboardSummary);
+router.post("/sale/pay/:id", paySale);
+
 
 module.exports = router;

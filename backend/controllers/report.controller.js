@@ -59,6 +59,7 @@ exports.getDashboardSummary = async (req, res) => {
     ]);
     const todayRevenue = todayRevenueData[0]?.total || 0;
 
+
     const salesByDay = await Sale.aggregate([
       {
         $group: {
@@ -175,4 +176,60 @@ exports.getDashboardSummary = async (req, res) => {
     });
   }
 };
+exports.paySale = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { amount } = req.body;
 
+    if (!amount || amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "ចំនួនប្រាក់មិនត្រឹមត្រូវ",
+      });
+    }
+
+    const sale = await Sale.findById(id);
+
+    if (!sale) {
+      return res.status(404).json({
+        success: false,
+        message: "រកមិនឃើញវិក័យប័ត្រ",
+      });
+    }
+    if (sale.paymentStatus === "paid") {
+      return res.status(400).json({
+        success: false,
+        message: "វិក័យប័ត្រនេះបានបង់រួចហើយ",
+      });
+    }
+
+    // 👉 បូកប្រាក់ថ្មី
+    sale.amountReceived = Number(sale.amountReceived || 0) + Number(amount);
+
+    const total = Number(sale.grandTotal || 0);
+
+    // 👉 គណនា
+    if (sale.amountReceived >= total) {
+      sale.changeBack = sale.amountReceived - total;
+      sale.dueAmount = 0;
+      sale.paymentStatus = "paid";
+    } else {
+      sale.dueAmount = total - sale.amountReceived;
+      sale.changeBack = 0;
+      sale.paymentStatus = "partial";
+    }
+
+    await sale.save();
+
+    res.json({
+      success: true,
+      message: "សងប្រាក់បានជោគជ័យ",
+      data: sale,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

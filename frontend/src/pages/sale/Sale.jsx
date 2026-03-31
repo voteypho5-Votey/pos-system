@@ -1,23 +1,25 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axiosInstance from "../../services/axiosInstance";
+import logo from "../../assets/logo vt.jpg";
 import "./sale.css";
 
 function Sale() {
   const [search, setSearch] = useState("");
   const [sales, setSales] = useState([]);
-  const [selectedSale, setSelectedSale] = useState(null);
+  // const [receiptData, setSelectedSale] = useState(null);
+  const [receiptData, setReceiptData] = useState(null);
   const [showReceipt, setShowReceipt] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
- const [exchangeRate, setExchangeRate] = useState(4100);
+  const [exchangeRate, setExchangeRate] = useState(4100);
 
-// useEffect(() => {
-//   axios.get("/api/exchange-rate").then(res => {
-//     setExchangeRate(res.data.rate);
-//   });
-// }, []);
+  // useEffect(() => {
+  //   axios.get("/api/exchange-rate").then(res => {
+  //     setExchangeRate(res.data.rate);
+  //   });
+  // }, []);
 
   const getSales = async () => {
     try {
@@ -78,7 +80,7 @@ function Sale() {
   }, [currentPage, totalPages]);
 
   const handleView = (sale) => {
-    setSelectedSale(sale);
+    setReceiptData(sale);
     setShowReceipt(true);
   };
 
@@ -91,8 +93,8 @@ function Sale() {
 
       setSales((prev) => prev.filter((item) => item.id !== id));
 
-      if (selectedSale?.id === id) {
-        setSelectedSale(null);
+      if (receiptData?.id === id) {
+        setReceiptData(null);
         setShowReceipt(false);
       }
 
@@ -104,6 +106,28 @@ function Sale() {
   };
 
   const currentUser = JSON.parse(localStorage.getItem("user"));
+
+  // const handlePrint = () => {
+  //   const el = document.getElementById("print-receipt");
+  //   if (!el) return;
+
+  //   const printContents = el.innerHTML;
+  //   const originalContents = document.body.innerHTML;
+
+  //   document.body.innerHTML = printContents;
+  //   window.print();
+  //   document.body.innerHTML = originalContents;
+
+  //   window.location.reload();
+  // };
+  const handlePrint = () => {
+  window.print();
+};
+
+  const closeReceipt = () => {
+    setShowReceipt(false);
+    setReceiptData(null);
+  };
 
   return (
     <div className="sale-content">
@@ -214,101 +238,157 @@ function Sale() {
         </div>
       </div>
 
-      {showReceipt && selectedSale && (
+      {showReceipt && receiptData && (
         <div className="receipt-overlay">
-          <div className="receipt-box">
-            <h2 className="receipt-title">VT GARAGE</h2>
-            <p className="receipt-sub">លេខវិក័យប័ត្រ</p>
+          <div className="receipt-box" id="print-receipt">
+            <div className="receipt-brand">
+              <div className="logo">
+                <img src={logo} alt="Logo" width="70" height="70" />
+                <h1 className="receipt-title">VT GARAGE</h1>
+              </div>
 
-            <div className="receipt-header-info">
-              <p>វិក័យប័ត្រ: {selectedSale.invoice}</p>
-              <p>អ្នកគិតប្រាក់: {selectedSale.seller}</p>
-              <p>ថ្ងៃខែឆ្នាំ: {selectedSale.date}</p>
+              <p className="receipt-subtitle">វិក័យប័ត្រទូទាត់</p>
             </div>
 
-            <div className="receipt-divider"></div>
+            <div className="receipt-head">
+              <div className="receipt-left">
+                <h3>ព័ត៌មានវិក័យប័ត្រ</h3>
+                <p>លេខវិក័យប័ត្រ: {receiptData.invoice}</p>
+                <p>កាលបរិច្ឆេទ: {receiptData.date}</p>
+              </div>
 
-            <div className="receipt-items">
+              <div className="receipt-right">
+                <p>
+                  ស្ថានភាព៖{" "}
+                  <span
+                    className={`status-badge ${receiptData.paymentStatus === "paid"
+                      ? "paid"
+                      : receiptData.paymentStatus === "partial"
+                        ? "partial"
+                        : "unpaid"
+                      }`}
+                  >
+                    {receiptData.paymentStatus === "paid"
+                      ? "បានបង់រួច"
+                      : receiptData.paymentStatus === "partial"
+                        ? "បង់បានខ្លះ"
+                        : "មិនទាន់បង់"}
+                  </span>
+                </p>
+              </div>
+            </div>
 
+            <div className="receipt-divider" />
 
-              {selectedSale.items?.length > 0 ? (
-                selectedSale.items.map((item, index) => (
-                  <div key={index} className="receipt-item">
-                    <span>{item.name}</span>
-                    <span>{item.qty}</span>
-                    <span>${Number(item.total).toFixed(2)}</span>
+            <div className="receipt-table">
+              <div className="receipt-header-row">
+                <span>មុខទំនិញ</span>
+                <span>ចំនួន</span>
+                <span>តម្លៃរាយ</span>
+                <span>បញ្ចុះតម្លៃ</span>
+                <span>សរុប</span>
+              </div>
+
+              <div className="receipt-rowLigh">
+                {receiptData.items && receiptData.items.length > 0 ? (
+                  receiptData.items.map((item, index) => {
+                    const qty = Number(item.qty || 0);
+                    const price = Number(item.price || 0);
+                    const rowTotal = price * qty;
+                    const rowDiscount = Number(item.discount || 0);
+                    const rowFinal = Number(item.total || rowTotal - rowDiscount);
+
+                    return (
+                      <div
+                        className="receipt-row"
+                        key={item.productId || item._id || index}
+                      >
+                        <span className="receipt-item-name">{item.name}</span>
+                        <span>{qty}</span>
+                        <span>${price.toFixed(2)}</span>
+                        <span>{rowDiscount > 0 ? `$${rowDiscount.toFixed(2)}` : "-"}</span>
+                        <span>${rowFinal.toFixed(2)}</span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="receipt-row">
+                    <span>មិនមានទំនិញ</span>
+                    <span>-</span>
+                    <span>-</span>
+                    <span>-</span>
+                    <span>-</span>
                   </div>
-                ))
-              ) : (
-                <div className="receipt-empty">មិនមានទំនិញ</div>
-              )}
+                )}
+              </div>
             </div>
 
-            <div className="receipt-divider"></div>
 
             <div className="receipt-summary">
-              <div className="receipt-row">
+              <div className="receipt-total-row">
                 <span>ទឹកប្រាក់សរុប</span>
-                <span>${Number(selectedSale.subtotal).toFixed(2)}</span>
+                <span>${Number(receiptData.subtotal || 0).toFixed(2)}</span>
               </div>
 
-              <div className="receipt-row discount">
-                <span>បញ្ចុះតម្លៃ ({selectedSale.discount}%)</span>
-                <span>-${Number(selectedSale.discountAmount).toFixed(2)}</span>
+              <div className="receipt-total-row">
+                <span>បញ្ចុះតម្លៃ ({receiptData.discount || 0}%)</span>
+                <span>- ${Number(receiptData.discountAmount || 0).toFixed(2)}</span>
               </div>
 
-              <div className="receipt-row">
-                <span>ពន្ធ​ Tax</span>
-                <span>${Number(selectedSale.tax).toFixed(2)}</span>
+              <div className="receipt-total-row">
+                <span>ពន្ធ</span>
+                <span>${Number(receiptData.tax || 0).toFixed(2)}</span>
               </div>
 
-              <div className="receipt-row total">
+              <div className="receipt-total-row grand-row">
                 <span>តម្លៃសរុប</span>
-                <span>${Number(selectedSale.total).toFixed(2)}</span>
+                <span>${Number(receiptData.total || 0).toFixed(2)}</span>
               </div>
 
               <div className="receipt-total-row">
                 <span>តម្លៃសរុបគិតជារៀល</span>
                 <span>
                   ៛
-                  {(Number(selectedSale?.total ?? 0) * exchangeRate).toLocaleString()}
+                  {Math.round(Number(receiptData.total || 0) * exchangeRate)}
+                  {/* {Math.round(Number(receiptData.total || 0) * exchangeRate).toLocaleString()} */}
                 </span>
               </div>
-
-              <div className="receipt-row">
+              {/* ================== */}
+              <div className="receipt-total-row">
                 <span>ប្រាក់ទទួល</span>
-                <span>${Number(selectedSale.amountReceived).toFixed(2)}</span>
+                <span>${Number(receiptData.amountReceived || 0).toFixed(2)}</span>
               </div>
 
-              <div className="receipt-row">
-                <span>ទឹកប្រាក់ជំពាក់</span>
-                <span>${Number(selectedSale.changeBack).toFixed(2)}</span>
-              </div>
-
-              {Number(selectedSale.dueAmount || 0) > 0 && (
-                <div className="receipt-row">
-                  <span>ប្រាក់អាប់</span>
-                  <span>${Number(selectedSale.dueAmount).toFixed(2)}</span>
+              {Number(receiptData.dueAmount || 0) > 0 && (
+                <div className="receipt-total-row due-row">
+                  <span>ទឹកប្រាក់ជំពាក់</span>
+                  <span>${Number(receiptData.dueAmount || 0).toFixed(2)}</span>
                 </div>
               )}
 
-              <div className="receipt-row">
-                <span>Status</span>
-                <span>
-                  {selectedSale.paymentStatus === "paid"
-                    ? "បានបង់រួច"
-                    : selectedSale.paymentStatus === "partial"
-                      ? "បង់បានខ្លះ"
-                      : "មិនទាន់បង់"}
-                </span>
+              {Number(receiptData.changeBack || 0) > 0 && (
+                <div className="receipt-total-row change-row">
+                  <span>ប្រាក់អាប់</span>
+                  <span>${Number(receiptData.changeBack || 0).toFixed(2)}</span>
+                </div>
+              )}
+
+              <div className="receipt-footer-note">
+                <p>សូមអរគុណសម្រាប់ការទិញទំនិញ</p>
+                <p>ទំនាក់ទំនង: 012 345 678</p>
               </div>
             </div>
 
-            <p className="receipt-thank">🙏 សូមអរគុណ!</p>
 
-            <div className="receipt-actions">
-              <button onClick={() => setShowReceipt(false)}>បិទ</button>
-              <button onClick={() => window.print()}>🖨 Print</button>
+
+            <div className="receipt-buttons">
+              <button className="receipt-close-btn" onClick={closeReceipt}>
+                បិទ
+              </button>
+
+              <button className="receipt-print-btn" onClick={handlePrint}>
+                🖨️ បោះពុម្ព
+              </button>
             </div>
           </div>
         </div>

@@ -560,7 +560,7 @@
 .receipt-row span:nth-child(3),
 .receipt-row span:nth-child(4),
 .receipt-row span:nth-child(5) {
-  text-align: right;
+  text-align: center;
 }
 
 .receipt-item-name {
@@ -703,6 +703,7 @@
 @media print {
   body * {
     visibility: hidden;
+    
   }
 
   .receipt-overlay,
@@ -725,6 +726,7 @@
     padding: 8px;
     max-height: none;
     overflow: visible;
+    
   }
 
   .receipt-buttons {
@@ -810,6 +812,7 @@
     max-width: 100%;
     padding: 16px;
     border-radius: 14px;
+    text-align: center;
   }
 
   .receipt-head {

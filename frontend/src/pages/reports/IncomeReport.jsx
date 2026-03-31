@@ -13,6 +13,8 @@ function IncomeReport() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [paidStatus, setPaidStatus] = useState({});
+
 
   const rowsPerPage = 10;
 
@@ -104,22 +106,35 @@ function IncomeReport() {
       "Tax",
       "Grand Total",
       "Amount Received",
+      "Amount Due",
       "Change Back",
       "Date",
     ];
 
-    const csvRows = filteredRows.map((item, index) => [
-      index + 1,
-      item.invoiceNo || "",
-      item.cashier || "",
-      Number(item.subtotal || 0).toFixed(2),
-      Number(item.discount || 0).toFixed(2),
-      Number(item.tax || 0).toFixed(2),
-      Number(item.grandTotal || 0).toFixed(2),
-      Number(item.amountReceived || 0).toFixed(2),
-      Number(item.changeBack || 0).toFixed(2),
-      item.createdAt ? new Date(item.createdAt).toLocaleString() : "",
-    ]);
+    const csvRows = filteredRows.map((item, index) => {
+      const subtotal = Number(item.subtotal || 0);
+      const discountAmount = subtotal * (Number(item.discount || 0) / 100);
+      const tax = Number(item.tax || 0);
+      const totalToPay = subtotal - discountAmount + tax;
+      const received = Number(item.amountReceived || 0);
+
+      const amountDue = received < totalToPay ? totalToPay - received : 0;
+      const changeBack = received > totalToPay ? received - totalToPay : 0;
+
+      return [
+        index + 1,
+        item.invoiceNo || "",
+        item.cashier || "",
+        subtotal.toFixed(2),
+        discountAmount.toFixed(2),
+        tax.toFixed(2),
+        totalToPay.toFixed(2),
+        received.toFixed(2),
+        amountDue.toFixed(2),
+        changeBack.toFixed(2),
+        item.createdAt ? new Date(item.createdAt).toLocaleString() : "",
+      ];
+    });
 
     const csvContent = [headers, ...csvRows]
       .map((row) => row.map((col) => `"${col}"`).join(","))
@@ -159,22 +174,35 @@ function IncomeReport() {
           "Tax",
           "Grand Total",
           "Amount Received",
+          "Amount Due",
           "Change Back",
           "Date",
         ],
       ],
-      body: filteredRows.map((item, index) => [
-        index + 1,
-        item.invoiceNo || "",
-        item.cashier || "",
-        `$${Number(item.subtotal || 0).toFixed(2)}`,
-        `$${Number(item.discount || 0).toFixed(2)}`,
-        `$${Number(item.tax || 0).toFixed(2)}`,
-        `$${Number(item.grandTotal || 0).toFixed(2)}`,
-        `$${Number(item.amountReceived || 0).toFixed(2)}`,
-        `$${Number(item.changeBack || 0).toFixed(2)}`,
-        item.createdAt ? new Date(item.createdAt).toLocaleString() : "",
-      ]),
+      body: filteredRows.map((item, index) => {
+        const subtotal = Number(item.subtotal || 0);
+        const discountAmount = subtotal * (Number(item.discount || 0) / 100);
+        const tax = Number(item.tax || 0);
+        const totalToPay = subtotal - discountAmount + tax;
+        const received = Number(item.amountReceived || 0);
+
+        const amountDue = received < totalToPay ? totalToPay - received : 0;
+        const changeBack = received > totalToPay ? received - totalToPay : 0;
+
+        return [
+          index + 1,
+          item.invoiceNo || "",
+          item.cashier || "",
+          `$${subtotal.toFixed(2)}`,
+          `$${discountAmount.toFixed(2)}`,
+          `$${tax.toFixed(2)}`,
+          `$${totalToPay.toFixed(2)}`,
+          `$${received.toFixed(2)}`,
+          `$${amountDue.toFixed(2)}`,
+          `$${changeBack.toFixed(2)}`,
+          item.createdAt ? new Date(item.createdAt).toLocaleString() : "",
+        ];
+      }),
       styles: {
         fontSize: 8,
       },
@@ -184,6 +212,45 @@ function IncomeReport() {
     });
 
     doc.save("income-report.pdf");
+  };
+
+  const totalPaid = useMemo(() => {
+    return filteredRows.reduce(
+      (sum, item) => sum + Number(item.amountReceived || 0),
+      0
+    );
+  }, [filteredRows]);
+
+  const [payments, setPayments] = useState({});
+  const handlePaymentChange = (id, value) => {
+    setPayments((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+  const handleSubmitPayment = async (id, amountDue) => {
+    if (!amountDue || Number(amountDue) <= 0) {
+      alert("គ្មានប្រាក់ត្រូវសង");
+      return;
+    }
+
+    try {
+      await axiosInstance.post(`/sale/pay/${id}`, {
+        amount: Number(amountDue),
+      });
+
+      setPaidStatus((prev) => ({
+        ...prev,
+        [id]: true,
+      }));
+
+      alert("សងប្រាក់បានជោគជ័យ");
+
+      getIncomeReport();
+    } catch (error) {
+      console.log(error);
+      alert("មានបញ្ហាក្នុងការសងប្រាក់");
+    }
   };
 
   return (
@@ -265,41 +332,112 @@ function IncomeReport() {
               <thead>
                 <tr>
                   <th>ល.រ</th>
-                  <th>Invoice</th>
-                  <th>Cashier</th>
-                  <th>Subtotal</th>
-                  <th>Discount</th>
-                  <th>Tax</th>
-                  <th>Grand Total</th>
-                  <th>Amount Received</th>
-                  <th>Change Back</th>
+                  <th>លេខវិក័យប័ត្រ</th>
+                  <th>អ្នកគិតលុយ</th>
+                  <th>ទឹកប្រាក់សរុប</th>
+                  <th>បញ្ចុះតម្លៃ</th>
+                  <th>ពន្ធ</th>
+                  <th>ទឹកប្រាក់សរុបត្រូវបង់</th>
+                  <th>ទឹកប្រាក់ទទួលបាន</th>
+                  <th>ទឹកប្រាក់ជំពាក់</th>
+                  <th>ប្រាក់សង</th>
+                  <th>ទឹកប្រាក់អាប់</th>
                   <th>កាលបរិច្ឆេទ</th>
                 </tr>
               </thead>
 
               <tbody>
                 {paginatedRows.length > 0 ? (
-                  paginatedRows.map((item, index) => (
-                    <tr key={item._id}>
-                      <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
-                      <td>{item.invoiceNo}</td>
-                      <td>{item.cashier}</td>
-                      <td>${Number(item.subtotal || 0).toFixed(2)}</td>
-                      <td>${Number(item.discount || 0).toFixed(2)}</td>
-                      <td>${Number(item.tax || 0).toFixed(2)}</td>
-                      <td className="grand-total">
-                        ${Number(item.grandTotal || 0).toFixed(2)}
-                      </td>
-                      <td>${Number(item.amountReceived || 0).toFixed(2)}</td>
-                      <td>${Number(item.changeBack || 0).toFixed(2)}</td>
-                      <td>{new Date(item.createdAt).toLocaleString()}</td>
-                    </tr>
-                  ))
+                  paginatedRows.map((item, index) => {
+                    const subtotal = Number(item.subtotal || 0);
+                    const discountAmount = subtotal * (Number(item.discount || 0) / 100);
+                    const tax = Number(item.tax || 0);
+                    const totalAfterDiscount = subtotal - discountAmount;
+                    const totalToPay = totalAfterDiscount + tax;
+                    const amountReceived = Number(item.amountReceived || 0);
+
+
+
+                    //  ជំពាក់
+                    const amountDue = amountReceived < totalToPay
+                      ? totalToPay - amountReceived
+                      : 0;
+
+                    // ប្រាក់សង (Paid)
+                    const isPaid = item.paymentStatus === "paid" || paidStatus[item._id];
+                    //  អាប់
+
+                    const changeBack = amountReceived > totalToPay
+                      ? amountReceived - totalToPay
+                      : 0;
+
+                    return (
+                      <tr key={item._id}>
+                        <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                        <td>{item.invoiceNo}</td>
+                        <td>{item.cashier}</td>
+
+                        {/* ទឹកប្រាក់សរុប */}
+                        <td>${subtotal.toFixed(2)}</td>
+
+                        {/* បញ្ចុះតម្លៃ (amount) */}
+                        <td>${discountAmount.toFixed(2)}</td>
+
+                        {/* ពន្ធ */}
+                        <td>${tax.toFixed(2)}</td>
+
+                        {/* ទឹកប្រាក់សរុបត្រូវបង់ */}
+                        <td>${totalToPay.toFixed(2)}</td>
+
+                        {/* ទឹកប្រាក់ទទួលបាន */}
+                        <td>${Number(item.amountReceived || 0).toFixed(2)}</td>
+
+                        {/* ទឹកប្រាក់ជំពាក់ */}
+                        {/* <td>${Number(item.AmountDue || 0).toFixed(2)}</td> */}
+                        <td>${amountDue.toFixed(2)}</td>
+
+                        {/* ទឹកប្រាក់សង */}
+                        <td>
+                          {/* បង្ហាញចំនួនត្រូវសង */}
+                          <div
+                            style={{
+                              marginBottom: "5px",
+                              fontWeight: "bold",
+                              color: amountDue > 0 ? "red" : "green"
+                            }}
+                          >
+                            ${amountDue.toFixed(2)}
+                          </div>
+
+                          {/* ប៊ូតុងសង */}
+                          <button
+                            onClick={() => handleSubmitPayment(item._id, amountDue)}
+                            disabled={isPaid || amountDue === 0}
+                            style={{
+                              background: isPaid ? "green" : "#4CAF50",
+                              color: "#fff",
+                              padding: "5px 10px",
+                              border: "none",
+                              borderRadius: "5px",
+                              cursor: isPaid ? "not-allowed" : "pointer"
+                            }}
+                          >
+                            {isPaid ? "សងរួច" : "សង"}
+                          </button>
+                        </td>
+
+
+                        {/* ទឹកប្រាក់អាប់ */}
+                        <td>${Number(item.changeBack || 0).toFixed(2)}</td>
+
+                        {/* កាលបរិច្ឆេទ */}
+                        <td>{new Date(item.createdAt).toLocaleString()}</td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
-                    <td colSpan="10" className="no-data">
-                      មិនមានទិន្នន័យ
-                    </td>
+                    <td colSpan="11">គ្មានទិន្នន័យ</td>
                   </tr>
                 )}
               </tbody>
@@ -316,7 +454,6 @@ function IncomeReport() {
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
                 >
-                  ‹
                 </button>
 
                 {[...Array(totalPages)].map((_, i) => (
@@ -337,7 +474,7 @@ function IncomeReport() {
                   }
                   disabled={currentPage === totalPages}
                 >
-                  ›
+
                 </button>
               </div>
             </div>

@@ -232,10 +232,20 @@
 }
 
 button {
+      padding: 10px;
   cursor: pointer;
   transition: 0.2s;
 }
 
 button:hover {
   transform: translateY(-1px);
+}
+@media print {
+  button {
+    display: none;
+  }
+
+  input {
+    display: none;
+  }
 }

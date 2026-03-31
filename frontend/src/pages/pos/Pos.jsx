@@ -231,9 +231,10 @@ const totalKHR = totalUSD * Number(exchangeRate || 0);
     }
   };
 
-  const closeReceipt = () => {
-    setShowReceipt(false);
-  };
+const closeReceipt = () => {
+  setShowReceipt(false);
+  setReceiptData(null);
+};
 
   const finishSale = () => {
     setCart([]);
@@ -467,150 +468,7 @@ const totalKHR = totalUSD * Number(exchangeRate || 0);
         </div>
       </div>
 
-      {/* {showReceipt && receiptData && (
-        <div className="receipt-overlay">
-          <div className="receipt-box">
-            <h1 className="receipt-title">MASTERIT POS</h1>
-
-            <div className="receipt-head">
-              <div className="receipt-left">
-                <h3>វិក័យប័ត្រ</h3>
-              </div>
-
-              <div className="receipt-right">
-                <p>កាលបរិច្ឆេទ: {receiptData.date}</p>
-                <p>លេខ: {receiptData.invoice}</p>
-              </div>
-            </div>
-
-            <div className="receipt-table">
-              <div className="receipt-row receipt-header-row">
-                <span>មុខទំនិញ</span>
-                <span>ចំនួន</span>
-                <span>តម្លៃរាយ</span>
-                <span>បញ្ចុះតម្លៃ $</span>
-                <span>តម្លៃសរុប</span>
-              </div>
-
-              <div className="receipt-rowLigh">
-                {receiptData.items && receiptData.items.length > 0 ? (
-                  receiptData.items.map((item, index) => {
-                    const qty = Number(item.qty || 0);
-                    const price = Number(item.price || 0);
-                    const rowTotal = price * qty;
-                    const rowDiscount = Number(item.discount || 0);
-                    const rowFinal = Number(item.total || rowTotal - rowDiscount);
-
-                    return (
-                      <div
-                        className="receipt-row"
-                        key={item.productId || item._id || index}
-                      >
-                        <span className="receipt-item-name">{item.name}</span>
-                        <span>{qty}</span>
-                        <span>${price.toFixed(2)}</span>
-                        <span>
-                          {rowDiscount > 0 ? `$${rowDiscount.toFixed(2)}` : "-"}
-                        </span>
-                        <span>${rowFinal.toFixed(2)}</span>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="receipt-row">
-                    <span>មិនមានទំនិញ</span>
-                    <span>-</span>
-                    <span>-</span>
-                    <span>-</span>
-                    <span>-</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="receipt-row receipt-total-row">
-              <span></span>
-              <span>ទឹកប្រាក់សរុប</span>
-              <span>${Number(receiptData.subtotal || 0).toFixed(2)}</span>
-            </div>
-
-            <div className="receipt-row receipt-total-row">
-              <span></span>
-              <span>បញ្ចុះតម្លៃ ({receiptData.discount || 0}%)</span>
-              <span>
-                -${Number(receiptData.discountAmount || 0).toFixed(2)}
-              </span>
-            </div>
-
-            <div className="receipt-row receipt-total-row">
-              <span></span>
-              <span>ពន្ធ</span>
-              <span>${Number(receiptData.tax || 0).toFixed(2)}</span>
-            </div>
-
-            <div className="receipt-row receipt-total-row">
-              <span></span>
-              <span>តម្លៃសរុប</span>
-              <span>${Number(receiptData.total || 0).toFixed(2)}</span>
-            </div>
-
-            <div className="receipt-row receipt-total-row">
-              <span></span>
-              <span>តម្លៃសរុបគិតជារៀល</span>
-              <span>
-                {(Number(receiptData.total || 0) * exchangeRate).toLocaleString()}{" "}
-                រៀល
-              </span>
-            </div>
-
-            <div className="receipt-row receipt-total-row">
-              <span></span>
-              <span>ប្រាក់ទទួល</span>
-              <span>${Number(receiptData.amountReceived || 0).toFixed(2)}</span>
-            </div>
-
-            {Number(receiptData.dueAmount || 0) > 0 && (
-              <div className="receipt-row receipt-total-row due-row">
-                <span></span>
-                <span>ទឹកប្រាក់ជំពាក់</span>
-                <span>${Number(receiptData.dueAmount || 0).toFixed(2)}</span>
-              </div>
-            )}
-
-            <div className="receipt-row receipt-total-row">
-              <span></span>
-              <span>ប្រាក់អាប់</span>
-              <span>${Number(receiptData.changeBack || 0).toFixed(2)}</span>
-            </div>
-
-            <div className="receipt-row receipt-total-row">
-              <span></span>
-              <span>ស្ថានភាព</span>
-              <span>
-                {receiptData.paymentStatus === "paid"
-                  ? "បានបង់រួច"
-                  : receiptData.paymentStatus === "partial"
-                  ? "បង់បានខ្លះ"
-                  : "មិនទាន់បង់"}
-              </span>
-            </div>
-
-            <p className="receipt-thank">សូមអរគុណ!</p>
-
-            <div className="receipt-buttons">
-              <button className="receipt-close-btn" onClick={closeReceipt}>
-                បិទ
-              </button>
-              <button className="receipt-finish-btn" onClick={finishSale}>
-                រួចរាល់
-              </button>
-              <button className="receipt-print-btn" onClick={handlePrint}>
-                🖨️ បោះពុម្ព
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
+      {/*  */}
       {showReceipt && receiptData && (
         <div className="receipt-overlay">
           <div className="receipt-box">
@@ -695,6 +553,7 @@ const totalKHR = totalUSD * Number(exchangeRate || 0);
                 )}
               </div>
             </div>
+            
 
             <div className="receipt-summary">
               <div className="receipt-total-row">
@@ -724,7 +583,7 @@ const totalKHR = totalUSD * Number(exchangeRate || 0);
                   {Math.round(Number(receiptData.total || 0) * exchangeRate).toLocaleString()}
                 </span>
               </div>
-
+{/* ================== */} 
               <div className="receipt-total-row">
                 <span>ប្រាក់ទទួល</span>
                 <span>${Number(receiptData.amountReceived || 0).toFixed(2)}</span>
