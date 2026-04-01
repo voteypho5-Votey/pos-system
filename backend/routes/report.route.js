@@ -11,7 +11,7 @@ const {
 router.get("/income", getIncomeReport);
 router.get("/stock", getStockReport);
 router.get("/dashboard-summary", getDashboardSummary);
-router.post("/sale/pay/:id", paySale);
+router.post("/report/sale/pay/:id", paySale);
 
 
 module.exports = router;

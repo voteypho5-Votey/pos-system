@@ -228,30 +228,24 @@ function IncomeReport() {
       [id]: value,
     }));
   };
-  const handleSubmitPayment = async (id, amountDue) => {
-    if (!amountDue || Number(amountDue) <= 0) {
-      alert("គ្មានប្រាក់ត្រូវសង");
-      return;
-    }
+ const handleSubmitPayment = async (id, amountDue) => {
+  if (!amountDue || amountDue <= 0) {
+    alert("គ្មានប្រាក់ត្រូវសង");
+    return;
+  }
 
-    try {
-      await axiosInstance.post(`/sale/pay/${id}`, {
-        amount: Number(amountDue),
-      });
+  try {
+    await axiosInstance.post(`/report/sale/pay/${id}`, {
+      amount: amountDue,
+    });
 
-      setPaidStatus((prev) => ({
-        ...prev,
-        [id]: true,
-      }));
-
-      alert("សងប្រាក់បានជោគជ័យ");
-
-      getIncomeReport();
-    } catch (error) {
-      console.log(error);
-      alert("មានបញ្ហាក្នុងការសងប្រាក់");
-    }
-  };
+    alert("សងប្រាក់បានជោគជ័យ");
+    getIncomeReport();
+  } catch (error) {
+    console.log(error);
+    alert("មានបញ្ហាក្នុងការសងប្រាក់");
+  }
+};
 
   return (
     <div className="income-page">
@@ -381,7 +375,7 @@ function IncomeReport() {
                         <td>${subtotal.toFixed(2)}</td>
 
                         {/* បញ្ចុះតម្លៃ (amount) */}
-                        <td>${discountAmount.toFixed(2)}</td>
+                        <td>-${discountAmount.toFixed(2)}</td>
 
                         {/* ពន្ធ */}
                         <td>${tax.toFixed(2)}</td>

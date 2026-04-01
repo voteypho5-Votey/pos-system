@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL + "/api",
   withCredentials: true,
@@ -14,9 +13,6 @@ axiosInstance.interceptors.request.use((config) => {
   }
 
   return config;
-});
-await axiosInstance.post(`/report/sale/pay/${id}`, {
-  amount: Number(amountDue),
 });
 
 export default axiosInstance;
